@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static',filename='find.css')}}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <title>Friends</title>
+    <style>
+/* General styling for friends and campaign sections */
+#friends, #campaign {
+   
+    margin: 25px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    background: linear-gradient(to right, #e0e0e0, #f8f8f8);
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+#friends:hover, #campaign:hover {
+    transform: scale(0.98);
+    background: linear-gradient(to right, #1b95e0, #7dbef0);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Flex container for elements inside */
+#f1, #f3, #f4 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    font-size: 18px;
+}
+
+/* Flex container for small items */
+#f4 {
+    gap: 10px;
+}
+
+/* Font styling for small items */
+#f4 h5 {
+    font-size: 14px;
+    color: #db891e;
+}
+
+/* Image styling inside f1 */
+#f1 img {
+    height: 60px;
+    width: 60px;
+    border-radius: 50%;
+    border: 2px solid #ddd;
+    transition: border-color 0.3s ease;
+}
+
+#f1 img:hover {
+    border-color: #4caf50;
+}
+
+/* Button styling inside f2 */
+#f2 button {
+    padding: 10px 20px;
+    background-color: #16a816;
+    color: #fff;
+    border: none;
+    border-radius: 25px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease, color 0.3s ease, border 0.3s ease;
+}
+
+#f2 button:hover {
+    background-color: #f2f2f2;
+    color: #333;
+    border: 1px solid #ddd;
+}
+
+/* Flex container for f2 buttons */
+#f2 {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+        /* Popup Background */
+        #negotiationPopup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            z-index: 1000;
+        }
+
+        #negotiationForm {
+            display: flex;
+            flex-direction: column;
+        }
+
+        #negotiationForm label {
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        #negotiationForm input,
+        #negotiationForm textarea {
+            margin-bottom: 12px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 100%;
+            box-sizing: border-box;
+            resize: vertical;
+        }
+
+        #negotiationForm button[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #negotiationForm button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        #negotiationForm button[type="button"] {
+            background-color: #6c757d;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        #negotiationForm button[type="button"]:hover {
+            background-color: #5a6268;
+        }
+        .tab-container {
+            margin: 30px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f1f1f1;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            cursor: pointer;
+            background: #f1f1f1;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .tab:hover,
+        .tab.active {
+            background: #6a11cb;
+            color: #fff;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 30px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+    <script>
+                function showTab(tabId) {
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(tabId).classList.add('active');
+        }
+    </script>
+</head>
+<body>
+    <div class="header">
+        <div id="logo">
+            <img src="{{url_for('static',filename='logo.jpeg')}}" alt="IEAS Logo">
+        </div>
+        <div id="links">
+            <a href="{{url_for('profile',user=current_user.username)}}">Profile</a>
+            <a href="{{url_for('influencer_dashboard',user_1=current_user.username)}}">Social</a>
+            <a href="{{ url_for('inf_search') }}">Campaigns</a>
+            <a href="{{ url_for('find') }}">Find</a>
+            <a href="{{ url_for('home') }}">Stats</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </div>
+    <div class="tab-container">
+        <div class="tabs">
+            <div class="tab" onclick="showTab('request_inf')">Influencer Request</div>
+            <div class="tab" onclick="showTab('camp_reqst')">Campaign Request</div>
+            <div class="tab" onclick="showTab('negotiate')">Negotiated Campaigns</div>
+            <div class="tab" onclick="showTab('reject')">Rejected Campaign</div>
+            <div class="tab" onclick="showTab('accept')">Accepted Campaigns</div>
+            <div class="tab" onclick="showTab('campsent')">Campaign Request Sent</div>
+            <div class="tab" onclick="showTab('frndsent')">Friend Request Sent</div>
+        </div>
+        <div class="tab-content" id="request_inf">
+            <h3 style="margin: 20px; margin-top: 40px;">Friend Request :</h4>
+                {% for request, user in friend_requests %}
+                    <div id="friends">
+                        <div id="f1" onclick="window.location.href='{{url_for('view_person',users=user.username)}}'">
+                            <img src="" alt="" width="50px" height="50px">
+                            <h4>{{ user.first_name }}{{ user.last_name }}</h4>
+                            </div>
+                            <div id="f3">
+                                <div id="f4">
+                                    <span class="material-symbols-outlined">person_add</span>
+                                    <h5>{{ user.id }}</h5>
+                                </div>
+                                <div id="f4">
+                                    <span class="material-symbols-outlined">rss_feed</span>
+                                    <h5>value</h5>
+                                </div>
+                            </div>
+                        
+                        <div id="f2">
+                            <button class="friend-action-btn" data-action="accept" data-request-id="{{ request.id }}">Accept</button>
+                            <button class="friend-action-btn" data-action="reject" data-request-id="{{ request.id }}">Reject</button>
+                            <button class="friend-action-btn" data-action="flag" data-request-id="{{ request.id }}">Flag</button>
+                        </div>
+                    </div>
+                {% endfor %}
+            
+        </div>
+        <div id="negotiate" class="tab-content" >
+            <h3 style="margin: 20px; margin-top: 40px;">Negotiated Campaigns :</h3>
+            {% for add, camp in adds %}
+                {% if add.status == 'negotiation' %}
+                <div id="campaign">
+                    <div id="f1" onclick="window.location.href='{{url_for('camp_view',campaign_id=camp.campaign_id)}}'">
+                        
+                        <img src="" alt="" width="50px" height="50px">
+                        <h4>{{ camp.title }}</h4>
+                        </div>
+                        <div id="f3">
+                            <div id="f4">
+                                <span class="material-symbols-outlined">money</span>
+                                <h5>{{ camp.budget }}</h5>
+                            </div>
+                            <div id="f4">
+                                <span class="material-symbols-outlined">today</span>
+                                <h5>{{ camp.start }} - {{ camp.end }}</h5>
+                            </div>
+                        </div>
+                    
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        
+        <div id="reject" class="tab-content" >
+            <h3 style="margin: 20px; margin-top: 40px;">Rejected Campaign :</h3>
+            {% for add, camp in adds %}
+                {% if add.status == 'rejected' %}
+                <div id="campaign">
+                    <div id="f1">
+                        <img src="" alt="" width="50px" height="50px">
+                        <h4>{{ camp.title }}</h4>
+                        </div>
+                        <div id="f3">
+                            <div id="f4">
+                                <span class="material-symbols-outlined">money</span>
+                                <h5>{{ camp.budget }}</h5>
+                            </div>
+                            <div id="f4">
+                                <span class="material-symbols-outlined">today</span>
+                                <h5>{{ camp.start }} - {{ camp.end }}</h5>
+                            </div>
+                        
+                    </div>
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        
+        <div id="accept" class="tab-content" >
+            <h3 style="margin: 20px; margin-top: 40px;">Accepted Campaigns :</h3>
+            {% for add, camp in adds %}
+                {% if add.status == 'accepted' %}
+                <div id="campaign">
+                    <div id="f1">
+                        <img src="" alt="" width="50px" height="50px">
+                        <h4>{{ camp.title }}</h4>
+                        </div>
+                        <div id="f3">
+                            <div id="f4">
+                                <span class="material-symbols-outlined">money</span>
+                                <h5>{{ camp.budget }}</h5>
+                            </div>
+                            <div id="f4">
+                                <span class="material-symbols-outlined">today</span>
+                                <h5>{{ camp.start }} - {{ camp.end }}</h5>
+                            </div>
+                        
+                    </div>
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div class="tab-content" id="camp_reqst">
+            <h3 style="margin: 20px; margin-top: 40px;">Campaign Request :</h3>
+            {% for add,camp in adds %}
+                {% if add.status == 'pending' %}
+                <div id="campaign">
+                    <div id="f1">
+                        <img src="" alt="" width="50px" height="50px">
+                        <h4>{{ camp.title }}</h4>
+                        </div>
+                        <div id="f3">
+                            <div id="f4">
+                                <span class="material-symbols-outlined">money</span>
+                                <h5>{{ camp.budget }}</h5>
+                            </div>
+                            <div id="f4">
+                                <span class="material-symbols-outlined">today</span>
+                                <h5>{{ camp.start }} - {{ camp.end }}</h5>
+                            </div>
+                        </div>
+                    
+                    <div id="f2">
+                        <button class="campaign-action-btn" data-action="accept" data-request-id="{{ add.request_id }}">Accept</button>
+                        <button class="campaign-action-btn" data-action="negotiate" data-request-id="{{ add.request_id }}">Negotiate</button>
+                        <button class="campaign-action-btn" data-action="reject" data-request-id="{{ add.request_id }}">Reject</button>
+                        <button class="campaign-action-btn" data-action="flag" data-request-id="{{ add.request_id }}">Flag</button>
+                    </div>
+                </div>
+                {% elif add.status == 'fixed' %}
+                <div id="campaign">
+                    <div id="f1">
+                        <img src="" alt="" width="50px" height="50px">
+                        <h4>{{ camp.title }}</h4>
+                        </div>
+                        <div id="f3">
+                            <div id="f4">
+                                <span class="material-symbols-outlined">money</span>
+                                <h5>{{ camp.budget }}</h5>
+                            </div>
+                            <div id="f4">
+                                <span class="material-symbols-outlined">today</span>
+                                <h5>{{ camp.start }} - {{ camp.end }}</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="f2">
+                        <button class="campaign-action-btn" data-action="accept" data-request-id="{{ add.request_id }}">Accept</button>
+                        <button class="campaign-action-btn" data-action="reject" data-request-id="{{ add.request_id }}">Reject</button>
+                        <button class="campaign-action-btn" data-action="flag" data-request-id="{{ add.request_id }}">Flag</button>
+                    </div>
+                </div>
+                {% endif %}
+            {% endfor %}
+        
+            <!-- Popup form structure -->
+            <div id="negotiationPopup">
+                <form id="negotiationForm">
+                    <label for="revised_payment">Revised Payment:</label>
+                    <input type="number" id="revised_payment" name="revised_payment" required>
+                    <label for="message">Message:</label>
+                    <textarea id="message" name="message" required></textarea>
+                    <button type="submit">Submit</button>
+                    
+                    <button type="button" onclick="closePopup()">Cancel</button>
+                </form>
+            </div>
+
+    </div>
+
+    <div class="tab-content" id="frndsent">
+        <h3 style="margin: 20px; margin-top: 40px;">Friend Request Sent :</h3>
+        {% for friend,user in friends %}
+        <div id="friend">
+            <div id="f1">
+                {%if user.profile_picture%}
+                    <img src="{{url_for('uploaded_file',filename=user.profile_picture.replace('upload\\','')) }}" alt="{{ user.first_name }}" width="60px" height="60px">
+                {%else%}
+                    <img src="{{url_for('static',filename='default.jpg')}}" alt="{{user.first_name}}" width='60px' height="60px">    
+                {%endif%}    
+                <h4>{{ user.first_name }} {{user.last_name}}</h4>
+                <h4>{{user.role}}</h4>
+                <h4>{{user.industry}}</h4>
+                   </div> 
+                <div id="f2">
+                    <button class="friend-action-btn" data-action="cancel" data-request-id="{{ friend.id }}">Cancel</button>
+                </div>
+            
+        </div>
+        <br><hr>
+        {% endfor %}
+    </div>
+    <div class="tab-content" id="campsent">
+        <h3 style="margin: 20px; margin-top: 40px;">Campaign Request Sent :</h3>
+        {% for add, camp in adds %}
+            {% if add.status == 'request' %}
+                <div id="campaign">
+                    <div id="f1">
+                        <img src="{{ camp.image_url }}" alt="{{ camp.title }}" width="60px" height="60px">
+                        <h4>{{ camp.title }}</h4>
+                    </div>
+                    <div id="f3">
+                        <div id="f4">
+                            <span class="material-symbols-outlined">money</span>
+                            <h5>{{ camp.budget }}</h5>
+                        </div>
+                        <div id="f4">
+                            <span class="material-symbols-outlined">today</span>
+                            <h5>{{ camp.start }} - {{ camp.end }}</h5>
+                        </div>
+                    </div>
+                    <div id="f2">
+                        <button class="campaign-action-btn" data-action="cancel" data-request-id="{{ add.request_id }}">Cancel</button>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    
+    <script>
+        // Friend Request Action Handling
+        document.querySelectorAll('.friend-action-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const action = this.dataset.action;
+                const requestId = this.dataset.requestId;
+
+                fetch(`/friend_request/${requestId}/${action}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert(data.message);
+                        this.closest('#friends').remove();
+                    } else {
+                        alert(data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            });
+        });
+
+        // Campaign Request Action Handling
+        document.querySelectorAll('.campaign-action-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const action = this.dataset.action;
+                const requestId = this.dataset.requestId;
+
+                if (action === 'negotiate') {
+                    // Show negotiation popup
+                    document.getElementById('negotiationForm').dataset.requestId = requestId;
+                    document.getElementById('negotiationPopup').style.display = 'block';
+                } else {
+                    fetch(`/campaign_request/${requestId}/${action}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            alert(data.message);
+                            this.closest('#campaign').remove();
+                        } else {
+                            alert(data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                }
+            });
+        });
+
+        // Handle negotiation form submission
+        document.getElementById('negotiationForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const requestId = this.dataset.requestId;
+            const revisedPayment = document.getElementById('revised_payment').value;
+            const message = document.getElementById('message').value;
+
+            fetch(`/campaign_request/negotiate/${requestId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ revised_payment: revisedPayment, message: message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                if (data.status === 'success') {
+                    document.getElementById('negotiationPopup').style.display = 'none';
+                    this.closest('#campaign').remove();
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+
+        // Close popup
+        function closePopup() {
+            document.getElementById('negotiationPopup').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

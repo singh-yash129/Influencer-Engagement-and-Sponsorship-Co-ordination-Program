@@ -1,0 +1,71 @@
+body {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    margin: 0;
+    padding: 0;
+    
+}
+
+
+
+#stom {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+
+}
+
+#img {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#img img {
+    border-radius: 50%;
+    width: 100%;
+    max-width: 650px;
+    height: 90%;
+}
+
+#welcome {
+    flex: 1;
+    padding: 20px;
+}
+
+#welcome img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    display: block;
+    margin: 0 auto 20px;
+}
+
+#welcome p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #fffefe;
+}
+
+#welcome #links {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+#welcome #links a {
+    color: #fff;
+    background-color: #007bff;
+    text-decoration: none;
+    font-size: 18px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    margin: 0 10px;
+}
+
+#welcome #links a:hover {
+    background-color: #0056b3;
+}
+

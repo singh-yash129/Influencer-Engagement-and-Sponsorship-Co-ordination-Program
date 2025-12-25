@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flagged Users</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='find.css') }}">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<style>
+    .unflag-btn {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    color: #f44336; 
+}
+
+.unflag-btn:hover {
+    color: #d32f2f; 
+}
+
+.material-icons {
+    vertical-align: middle;
+    font-size: 24px; 
+}
+.content {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+h3 {
+    margin-top: 0;
+    font-size: 22px;
+    color: #333;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+}
+
+th {
+    background-color: #3f51b5;
+    color: white;
+    font-weight: normal;
+}
+
+td {
+    color: #333;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+.unflag-btn {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    color: #f44336;
+}
+
+.unflag-btn:hover {
+    color: #d32f2f;
+}
+
+.material-icons {
+    vertical-align: middle;
+    font-size: 24px;
+}
+
+</style>
+<body>
+    <div class="header">
+        <div id="logo">
+            <img src="{{ url_for('static', filename='logo.jpeg') }}" alt="IEAS Logo">
+        </div>
+        <h2>Flagged Users</h2>
+        <div id="links">
+            <a href="">Profile</a>
+            <a href="{{ url_for('add_campaign', user=current_user.username) }}">Campaigns</a>
+            <a href="{{ url_for('spo_inf_search') }}">Find</a>
+            <a href="{{ url_for('home') }}">Stats</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </div>
+
+    <div class="content">
+        <h3>Flagged Users List</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Flag ID</th>
+                    <th>Flagged User</th>
+                    <th>Flagger User</th>
+                    <th>Reason</th>
+                    <th>Created At</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="flagged-users-table">
+                <!-- Table rows will be dynamically populated using JavaScript -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch('/api/flagged_users')
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.getElementById('flagged-users-table');
+                    data.forEach(flag => {
+                        const row = document.createElement('tr');
+                        
+                        row.innerHTML = `
+                            <td>${flag.flag_id}</td>
+                            <td>${flag.flagged_user_id}</td>
+                            <td>${flag.flagger_user_id}</td>
+                            <td>${flag.reason}</td>
+                            <td>${new Date(flag.created_at).toLocaleString()}</td>
+                            <td>
+                                <button class="unflag-btn" data-flag-id="${flag.flag_id}">
+                                    <span class="material-icons">flag</span> <!-- Material Icon -->
+                                </button>
+                            </td>
+                        `;
+                        
+                        tableBody.appendChild(row);
+                    });
+
+                    // Add event listeners to unflag buttons
+                    document.querySelectorAll('.unflag-btn').forEach(button => {
+                        button.addEventListener('click', function() {
+                            const flagId = this.getAttribute('data-flag-id');
+                            fetch(`/api/unflag/${flagId}`, { method: 'POST' })
+                                .then(response => response.json())
+                                .then(result => {
+                                    if (result.status === 'success') {
+                                        // Remove the row from the table
+                                        this.closest('tr').remove();
+                                    } else {
+                                        alert(result.message);
+                                    }
+                                });
+                        });
+                    });
+                });
+        });
+    </script>
+</body>
+</html>

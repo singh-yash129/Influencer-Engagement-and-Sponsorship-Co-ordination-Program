@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign-Up - IEAS</title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='header.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='Influnecer_reg.css') }}">
+</head>
+<body>
+    <div class="header">
+        <div id="logo">
+            <img src="{{ url_for('static',filename='logo.jpeg')}}" alt="IEAS Logo">
+        </div>
+        <div id="links">
+           <a href="{{url_for('home')}}">Home</a>
+           <a href="{{url_for('login')}}">Login</a>
+           <a href="{{url_for('about')}}">About</a>
+           <a href="{{url_for('privacy')}}">Privacy Policy</a>
+           <a href="{{url_for('help')}}">Help</a>
+        
+        </div>
+    </div>
+    <div class="container">
+        <h2>Influencer Registration</h2>
+        <form action="{{ url_for('signup', data='influencer') }}" method="post">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="first-name">First Name</label>
+                    <input type="text" id="first-name" name="first_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="last-name">Last Name</label>
+                    <input type="text" id="last-name" name="last_name" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="dob">Date of Birth</label>
+                    <input type="date" id="dob" name="dob" required>
+                </div>
+                <div class="form-group">
+                    <label for="gender">Gender</label>
+                    <select id="gender" name="gender" required>
+                        <option value="" disabled selected>Select your gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div class="form-group">
+                <label for="confirm-password">Confirm Password</label>
+                <input type="password" id="confirm-password" name="confirm_password" required>
+            </div>
+            <label for="platforms">Platform Presence</label>
+            <br>
+            <div class="platform">
+                <br><br>
+                <div class="platform-logo">
+                    <input type="checkbox" id="platform-instagram" name="platforms" value="instagram">
+                    <img src="https://img.icons8.com/?size=100&id=32323&format=png&color=000000">
+                    <label for="platform-instagram">Instagram</label>
+                </div>
+                <br>
+                <div class="platform-logo">
+                    <input type="checkbox" id="platform-youtube" name="platforms" value="youtube">
+                    <img src="https://img.icons8.com/?size=100&id=19318&format=png&color=000000">
+                    <label for="platform-youtube">YouTube</label>
+                </div><br>
+                <div class="platform-logo">
+                    <input type="checkbox" id="platform-twitter" name="platforms" value="twitter">
+                    <img src="https://img.icons8.com/?size=100&id=xWVjuc9hryql&format=png&color=000000">
+                    <label for="platform-twitter">Twitter</label>
+                </div><br>
+                <div class="platform-logo">
+                    <input type="checkbox" id="platform-facebook" name="platforms" value="facebook">
+                    <img src="https://img.icons8.com/?size=100&id=13912&format=png&color=000000">
+                    <label for="platform-facebook">Facebook</label>
+                </div><br>
+                <div class="platform-logo">
+                    <input type="checkbox" id="platform-linkedin" name="platforms" value="linkedin">
+                    <img src="https://img.icons8.com/?size=100&id=xuvGCOXi8Wyg&format=png&color=000000">
+                    <label for="platform-linkedin">LinkedIn</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <button type="submit">Register Now</button>
+            </div>
+        </form>
+        <a href="{{ url_for('login') }}">Already have an account? Sign in</a>
+    </div>
+</body>
+</html>

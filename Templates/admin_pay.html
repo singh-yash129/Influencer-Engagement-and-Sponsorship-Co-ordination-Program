@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+   
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #f0f0f0;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+tr:hover {
+  background-color: #ddd;
+}
+
+.table-container {
+  margin: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.table-header {
+  background-color: #333;
+  color: #fff;
+  padding: 10px;
+  text-align: center;
+}
+
+.table-header th {
+  border-bottom: 2px solid #fff;
+}
+
+.table-body {
+  padding: 10px;
+}
+
+.table-body tr {
+  border-bottom: 1px solid #ddd;
+}
+
+.table-body tr:last-child {
+  border-bottom: none;
+}
+
+@media only screen and (max-width: 768px) {
+  table {
+    font-size: 14px;
+  }
+  th, td {
+    padding: 5px;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  table {
+    font-size: 12px;
+  }
+  th, td {
+    padding: 3px;
+  }
+}
+    /* Add some basic styling to the tabs */
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 20px;
+}
+
+.tab {
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.tab:hover {
+  background-color: #f2f2f2;
+}
+
+.tab.active {
+  background-color: #333;
+  color: #fff;
+}
+
+.table-container {
+  padding: 20px;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #f0f0f0;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+tr:hover {
+  background-color: #ddd;
+}
+
+.table-header {
+  background-color: #333;
+  color: #fff;
+  padding: 10px;
+  text-align: center;
+}
+
+.table-header th {
+  border-bottom: 2px solid #fff;
+}
+
+.table-body {
+  padding: 10px;
+}
+
+.table-body tr {
+  border-bottom: 1px solid #ddd;
+}
+
+.table-body tr:last-child {
+  border-bottom: none;
+}
+
+@media only screen and (max-width: 768px) {
+  .tabs {
+    flex-direction: column;
+  }
+  .tab {
+    width: 100%;
+    margin: 10px 0;
+  }
+  table {
+    font-size: 14px;
+  }
+  th, td {
+    padding: 5px;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  table {
+    font-size: 12px;
+  }
+  th, td {
+    padding: 3px;
+  }
+}
+</style>
+<body>
+    <div class="header">
+        <div id="logo">
+            <img src="{{ url_for('static', filename='logo.jpeg') }}" alt="IEAS Logo">
+        </div>
+        <div id="links">
+            <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('admin_search_all') }}">Find</a>
+            <a href="{{url_for('admin_payment')}}">Payments</a>
+            <a href="{{ url_for('about') }}">Stats</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </div>
+    <!-- Tab container -->
+<div class="tabs">
+    <!-- Tab 1: Adds -->
+    <div class="tab" id="tab-adds">
+      <span>Adds</span>
+    </div>
+    <!-- Tab 2: Payments -->
+    <div class="tab" id="tab-payments">
+      <span>Payments</span>
+    </div>
+  </div>
+  
+  <!-- Table containers -->
+  <div class="table-container">
+    <!-- Table 1: Adds -->
+    <div class="table-body" id="table-adds-body">
+      <h2>Adds</h2>
+      <table>
+        <tr>
+          <th>Campaign ID</th>
+          <th>Influencer ID</th>
+          <th>Sponsor ID</th>
+          <th>Messages</th>
+          <th>Requirements</th>
+          <th>Payment Amount</th>
+          <th>Status</th>
+          <th>Flagged</th>
+          <th>Revised Payment</th>
+          <th>Request ID</th>
+        </tr>
+        {% for add in adds %}
+        <tr>
+          <td>{{ add.campaign_id }}</td>
+          <td>{{ add.influencer_id }}</td>
+          <td>{{ add.sponsor_id }}</td>
+          <td>{{ add.messages }}</td>
+          <td>{{ add.requirements }}</td>
+          <td>{{ add.payment_amount }}</td>
+          <td>{{ add.status }}</td>
+          <td>{{ add.flagged }}</td>
+          <td>{{ add.revised_payment }}</td>
+          <td>{{ add.request_id }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+    
+    <!-- Table 2: Payments -->
+    <div class="table-body" id="table-payments-body">
+      <h2>Payments</h2>
+      <table>
+        <tr>
+          <th>User ID</th>
+          <th>Transaction ID</th>
+          <th>Campaign ID</th>
+          <th>Status</th>
+          <th>Amount</th>
+          <th>Add ID</th>
+        </tr>
+        {% for payment in payments %}
+        <tr>
+          <td>{{ payment.user_id }}</td>
+          <td>{{ payment.transaction_id }}</td>
+          <td>{{ payment.campaign_id }}</td>
+          <td>{{ payment.status }}</td>
+          <td>{{ payment.amount }}</td>
+          <td>{{ payment.add_id }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+  </div>
+  
+  <!-- JavaScript code to toggle tabs -->
+  <script>
+    const tabs = document.querySelectorAll('.tab');
+    const tableBodies = document.querySelectorAll('.table-body');
+    
+    tabs.forEach((tab, index) => {
+      tab.addEventListener('click', () => {
+        tabs.forEach((tab) => tab.classList.remove('active'));
+        tableBodies.forEach((tableBody) => tableBody.style.display = 'none');
+        
+        tab.classList.add('active');
+        tableBodies[index].style.display = 'block';
+      });
+    });
+  </script>
+</body>
+</html>

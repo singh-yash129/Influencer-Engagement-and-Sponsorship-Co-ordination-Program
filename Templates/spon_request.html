@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request from Owner</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='find.css') }}">
+    <style>
+        /* General Styles */
+        body {
+            background: #f4f7fc;
+            color: #333;
+            margin: 10px;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        .tab-container {
+            margin: 30px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f1f1f1;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            cursor: pointer;
+            background: #f1f1f1;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .tab:hover,
+        .tab.active {
+            background: #6a11cb;
+            color: #fff;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 30px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        #campaign {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        #campaign #user img {
+            height: 60px;
+            width: 60px;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+
+        #campaign #camps {
+            flex-grow: 1;
+        }
+
+        #campaign #buttons button {
+            padding: 10px 20px;
+            margin: 5px;
+            background: #6a11cb;
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        #campaign #buttons button:hover {
+            background: #2575fc;
+        }
+
+        #negotiationPopup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            width: 400px;
+        }
+
+        #negotiationPopup form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        #negotiationPopup label {
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        #negotiationPopup input,
+        #negotiationPopup textarea {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            resize: vertical;
+        }
+
+        #negotiationPopup button {
+            padding: 10px 20px;
+            background: #6a11cb;
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        #negotiationPopup button:hover {
+            background: #2575fc;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div id="logo">
+            <img src="{{ url_for('static', filename='logo.jpeg') }}" alt="IEAS Logo">
+        </div>
+        <div id="links">
+            <a href="{{ url_for('spo_inf_search') }}">Find</a>
+            <a href="{{ url_for('add_campaign',user=current_user.username) }}">Campaigns</a>
+            <a href="{{ url_for('sponsor_dashboard',user_1=current_user.username) }}">Dashboard</a>
+
+            <a href="{{ url_for('about') }}">Stats</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </div>
+    <div class="tab-container">
+        <div class="tabs">
+            <div class="tab" onclick="showTab('request_camps')">Influencer Request</div>
+            <div class="tab" onclick="showTab('accepted')">Accepted Campaign</div>
+            <div class="tab" onclick="showTab('rejected')">Rejected Campaign</div>
+            <div class="tab" onclick="showTab('negotiate')">Negotiate Campaign</div>
+            <div class="tab" onclick="showTab('pending')">Pending Campaign</div>
+        </div>
+
+        <div class="tab-content" id="request_camps">
+            <h2>Influencer Request for the Campaign:</h2>
+            {% for add, campaign, user in adds %}
+                {% if add.status == 'request' %}
+                    <div id="campaign">
+                        {% if user.profile_picture %}
+                        <img src="{{ url_for('uploaded_file', filename=user.profile_picture.replace('upload\\', '')) }}" alt="Profile Picture">
+                    {% else %}
+                        <p>No profile picture available</p>
+                    {% endif %}                         <h4>{{ user.username }}</h4>
+                        <h3>Campaign</h3>
+                        <details>{{ add.campaign_id }}</details>
+                        <div id="buttons">
+                            <button onclick="handleAction('{{ add.request_id }}', 'assigned')">Assigned</button>
+                            <button onclick="handleAction('{{ add.request_id }}', 'reject')">Reject</button>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <div class="tab-content" id="accepted">
+            <h2>Campaigns Assigned to Influencers:</h2>
+            {% for add, campaign, user in adds %}
+                {% if add.status == 'accepted' %}
+                    <div id="campaign">
+                        {% if user.profile_picture %}
+                             <img src="{{ url_for('uploaded_file', filename=user.profile_picture.replace('upload\\', '')) }}" alt="Profile Picture">
+                        {% else %}
+                        <p>No profile picture available</p>
+                        {% endif %}                        
+                        <h4>{{ user.username }}</h4>
+                        <h3>{{ campaign.title }}</h3>
+                        <h3>{{add.payment_amount}}</h3>
+                        <details>{{ add.campaign_id }}</details>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        
+
+        <div class="tab-content" id="rejected">
+            <h2>Influencers who Rejected the Campaign:</h2>
+            {% for add, campaign, user in adds %}
+                {% if add.status == 'rejected' %}
+                    <div id="campaign">
+                        {% if user.profile_picture %}
+                           <img src="{{ url_for('uploaded_file', filename=user.profile_picture.replace('upload\\', '')) }}" alt="Profile Picture">
+                        {% else %}
+                           <p>No profile picture available</p>
+                        {% endif %}
+                        <h4>{{ user.username }}</h4>
+                        <h3>{{ campaign.title }}</h3>
+                        <h3>{{add.payment_amount}}</h3>
+
+                        <details>{{ add.campaign_id }}</details>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <div class="tab-content" id="negotiate">
+            <h2>Influencers Requesting Negotiation:</h2>
+            {% for add, campaign, user in adds %}
+                {% if add.status == 'negotiation' %}
+                    <div id="campaign">
+                        {% if user.profile_picture %}
+                           <img src="{{ url_for('uploaded_file', filename=user.profile_picture.replace('upload\\', '')) }}" alt="Profile Picture">
+                        {% else %}
+                        <p>No profile picture available</p>
+                        {% endif %}                  
+                              <h4>{{ user.username }}</h4>
+                        <h3>{{ campaign.title }}</h3>
+                        <h3>{{add.payment_amount}}</h3>
+
+                        <details>{{ add.campaign_id }}</details>
+                        <h3>{{add.revised_payment}}</h3>
+
+                        <details>Message: {{ add.messages }}</details>
+                        <div id="buttons">
+                            <button onclick="handleAction('{{ add.request_id }}', 'accept')">Accept</button>
+                            <button onclick="openNegotiationPopup('{{ add.request_id }}')">Negotiate</button>
+                            <button onclick="handleAction('{{ add.request_id }}', 'reject')">Reject</button>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+            <div id="negotiationPopup">
+                <form id="negotiationForm">
+                    <input type="hidden" id="negotiation_campaign_id" name="campaign_id">
+                    <label for="revised_payment">Revised Payment:</label>
+                    <input type="number" id="revised_payment" name="revised_payment" required>
+                    <label for="message">Message:</label>
+                    <textarea id="message" name="message" required></textarea>
+                    <div id="bts" style="display: flex; align-items: center; justify-content: space-between;">
+                        <button type="submit">Revised</button>
+                        <button type="button" onclick="handleFixed()">fixed</button>
+                        <button type="button" onclick="closePopup()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="tab-content" id="pending">
+            <h2>Pending Campaigns:</h2>
+            {% for add,campaign,user in adds %}
+                {% if add.status == 'pending' or add.status == 'fixed' %}
+                    <div id="campaign">
+                        {% if user.profile_picture %}
+                        <img src="{{ url_for('uploaded_file', filename=user.profile_picture.replace('upload\\', '')) }}" alt="Profile Picture">
+                    {% else %}
+                        <p>No profile picture available</p>
+                    {% endif %}             
+                               <h4>{{ user.username }}</h4>
+                        <h3>{{ campaign.title }}</h3>
+                        <h3>{{add.payment_amount}}</h3>
+
+                        <details>{{ add.campaign_id }}</details>
+                        <div id="buttons">
+                            <button onclick="handleAction('{{ add.request_id }}', 'withdraw')">Withdraw</button>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        function openNegotiationPopup(campaignId) {
+            document.getElementById('negotiation_campaign_id').value = campaignId;
+            document.getElementById('negotiationPopup').style.display = 'block';
+        }
+
+        function closePopup() {
+            document.getElementById('negotiationPopup').style.display = 'none';
+        }
+
+        function handleFixed() {
+    const requestId = document.getElementById('negotiation_campaign_id').value;
+    const revisedPayment = document.getElementById('revised_payment').value;
+    const message = document.getElementById('message').value;
+
+    fetch(`/request/${requestId}/fixed`, {
+        method: 'POST',
+        body: JSON.stringify({
+            revised_payment: revisedPayment,
+            message: message
+        }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert(data.message);
+        closePopup();
+        window.location.reload(); // Reload to reflect changes
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('negotiationForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const formData = new FormData(this);
+                const requestId = formData.get('request_id');
+
+                fetch(`/request/${requestId}/negotiate`, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        revised_payment: formData.get('revised_payment'),
+                        message: formData.get('message')
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    closePopup();
+                    window.location.reload(); // Reload to reflect changes
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            });
+        });
+
+        function showTab(tabId) {
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        function handleAction(requestId, action) {
+            fetch(`/request/${requestId}/${action}`, {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                window.location.reload(); // Reload to reflect changes
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+
+</html>

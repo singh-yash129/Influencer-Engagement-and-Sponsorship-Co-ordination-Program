@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - IEAS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='header.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+    <style>
+        #new-buttons a {
+            display: inline-block;
+            margin: 5px;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .background-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 110%;
+            object-fit: cover;
+            z-index: -1; 
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div id="logo">
+            <img src="{{ url_for('static', filename='logo.jpeg') }}" alt="IEAS Logo">
+            <h1>IEAS</h1>
+        </div>
+        <div id="links">
+            <a href="{{ url_for('account') }}">Account</a>
+            <a href="{{ url_for('privacy') }}">Privacy Policy</a>
+            <a href="{{ url_for('about') }}">About</a>
+            <a href="{{ url_for('help') }}">Help</a>
+        </div>
+    </div>
+    <video autoplay muted loop class="background-video">
+        <source src='https://drive.google.com/file/d/1uhykjHDkmcPmC5oAP7I8pl-hmURNqSbz/view?usp=sharing' type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <div id="stom">
+        <div id="img">
+            <img src="{{ url_for('static', filename='welcome.jpg') }}" alt="welcome" width="620px" height="620px" style="border-radius: 50%; ">
+        </div>
+        <div id="welcome">
+            <hr>
+            <p>
+                <strong>Welcome to our community!</strong> We're thrilled to have you on board and can't wait to see the incredible content you'll create as part of our team.<br><br>
+                <strong>We're excited to start this journey with you!</strong> Your creativity and unique perspective are exactly what we need to bring our brand to life.<br><br>
+                <strong>Thank you for joining us!</strong> Your influence extends beyond your platform, and we're looking forward to the positive impact you'll have on our brand.<br><br>
+                <strong>Let's make magic together!</strong> We believe in the power of your voice and can't wait to see how you'll use it to engage with our audience.<br><br>
+                <strong>Welcome to the team!</strong> We're confident that your authenticity will resonate with our audience and help us build a stronger community.<br>
+            </p>
+            <hr>
+            <div id="links">
+                <a href="{{ url_for('login') }}">Sign-in</a>
+                <a id="sign-up-btn" href="javascript:void(0);" onclick="showNewButtons()">Sign-up</a>
+                <div id="new-buttons" style="display: none;">
+                    <a href="{{ url_for('signup', data='influencer') }}">Sign-up as Influencer</a>
+                    <a href="{{ url_for('signup', data='sponsor') }}">Sign-up as Sponsor</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function showNewButtons() {
+            document.getElementById('sign-up-btn').style.display = 'none';
+            document.getElementById('new-buttons').style.display = 'block';
+        }
+    </script>
+</body>
+</html>

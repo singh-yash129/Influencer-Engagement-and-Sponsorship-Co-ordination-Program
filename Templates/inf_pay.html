@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payments for Influencer: </title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Payments for Influencer: </h2>
+        
+        <!-- Check if there are any payments to display -->
+        {% if payments %}
+            <table class="table table-bordered mt-4">
+                <thead>
+                    <tr>
+                        <th>Transaction ID</th>
+                        <th>Campaign ID</th>
+                        <th>User ID</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Loop through each payment and display in the table -->
+                    {% for payment in payments %}
+                    <tr>
+                        <td>{{ payment.transaction_id }}</td>
+                        <td>{{ payment.campaign_id }}</td>
+                        <td>{{ payment.user_id }}</td>
+                        <td>{{ payment.amount }}</td>
+                        <td>{{ payment.status }}</td>
+                        <td>
+
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No payments found for this sponsor.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Messaging System</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="{{url_for('static',filename='message.css')}}">
+    <script src="script.js"></script>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+                <div class="sidebar-sticky">
+                    <h4 class="text-center">Messages</h4>
+                    <input type="text" id="search-bar" class="form-control mb-3" placeholder="Search">
+                    <ul id="sidebar-menu" class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" onclick="showSection('inbox')">
+                                <i class="fas fa-inbox"></i> Inbox
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" onclick="showSection('outbox')">
+                                <i class="fas fa-paper-plane"></i> Outbox
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" onclick="showSection('drafts')">
+                                <i class="fas fa-save"></i> Drafts
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" onclick="showSection('requests')">
+                                <i class="fas fa-user-plus"></i> Message Requests
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" onclick="showSection('trash')">
+                                <i class="fas fa-trash-alt"></i> Trash
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" onclick="showSection('chat')">
+                                <i class="fas fa-comments"></i> Chat
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" onclick="showSection('compose')">
+                                <i class="fas fa-pencil-alt"></i> Compose
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-4">
+                <!-- Search Results -->
+                <div id="search-results" class="d-none">
+                    <h2>Search Results</h2>
+                    <ul id="results-list" class="list-group"></ul>
+                </div>
+
+                <!-- Inbox -->
+                <div id="inbox" class="d-none">
+                    <h2><i class="fas fa-inbox"></i> Inbox</h2>
+                    <ul id="messages-list" class="list-group"></ul>
+                </div>
+
+                <!-- Outbox -->
+                <div id="outbox" class="d-none">
+                    <h2><i class="fas fa-paper-plane"></i> Outbox</h2>
+                    <ul id="outbox-list" class="list-group"></ul>
+                </div>
+
+                <!-- Drafts -->
+                <div id="drafts" class="d-none">
+                    <h2><i class="fas fa-save"></i> Drafts</h2>
+                    <ul id="drafts-list" class="list-group"></ul>
+                </div>
+
+                <!-- Message Requests -->
+                <div id="requests" class="d-none">
+                    <h2><i class="fas fa-user-plus"></i> Message Requests</h2>
+                    <ul id="requests-list" class="list-group"></ul>
+                </div>
+
+                <!-- Trash -->
+                <div id="trash" class="d-none">
+                    <h2><i class="fas fa-trash-alt"></i> Trash</h2>
+                    <ul id="trash-list" class="list-group"></ul>
+                </div>
+
+                <!-- Chat -->
+                <div id="chat" class="d-none">
+                    <h2><i class="fas fa-comments"></i> Chat</h2>
+                    <div id="chat-window" class="border p-3 mb-3" style="height: 400px; overflow-y: auto;">
+                        <!-- Chat messages will appear here -->
+                    </div>
+                    <div id="chat-compose">
+                        <textarea id="chat-message" class="form-control" rows="3" placeholder="Type your message..."></textarea>
+                        <button type="button" class="btn btn-primary mt-2" onclick="sendChatMessage()">
+                            <i class="fas fa-paper-plane"></i> Send
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Compose Message -->
+                <div id="compose" class="d-none">
+                    <h2><i class="fas fa-pencil-alt"></i> Compose Message</h2>
+                    <form id="compose-form">
+                        <div class="form-group">
+                            <label for="receiver_id">Receiver ID</label>
+                            <input type="number" id="receiver_id" class="form-control" placeholder="Receiver ID">
+                        </div>
+                        <div class="form-group">
+                            <label for="subject">Subject</label>
+                            <input type="text" id="subject" class="form-control" placeholder="Subject">
+                        </div>
+                        <div class="form-group">
+                            <label for="body">Message</label>
+                            <textarea id="body" class="form-control" rows="6" placeholder="Type your message here..."></textarea>
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="sendMessage()">
+                            <i class="fas fa-paper-plane"></i> Send
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Message View -->
+                <div id="message-view" class="d-none">
+                    <h2><i class="fas fa-envelope-open"></i> Message Details</h2>
+                    <div id="message-details" class="border p-3 mb-3"></div>
+                    <button class="btn btn-secondary" onclick="goBack()">
+                        <i class="fas fa-arrow-left"></i> Back to Inbox
+                    </button>
+                    <button class="btn btn-warning" onclick="editMessage()">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                    <button class="btn btn-info" onclick="forwardMessage()">
+                        <i class="fas fa-share"></i> Forward
+                    </button>
+                    <button class="btn btn-danger" onclick="moveToTrash()">
+                        <i class="fas fa-trash"></i> Trash
+                    </button>
+                    <button class="btn btn-light" onclick="printMessage()">
+                        <i class="fas fa-print"></i> Print
+                    </button>
+                    <button class="btn btn-secondary" onclick="undoAction()">
+                        <i class="fas fa-undo"></i> Undo
+                    </button>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

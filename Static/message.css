@@ -1,0 +1,127 @@
+body {
+    background-color: #f1f3f4;
+    font-family: 'Arial', sans-serif;
+}
+
+#sidebar {
+    background-color: #ffffff;
+    border-right: 1px solid #ddd;
+    height: 100vh;
+    padding: 1rem;
+}
+
+.sidebar-sticky {
+    position: sticky;
+    top: 0;
+}
+
+#search-bar {
+    margin-bottom: 1rem;
+}
+
+#sidebar-menu .nav-link {
+    color: #333;
+}
+
+#sidebar-menu .nav-link:hover {
+    background-color: #f1f3f4;
+    border-radius: 4px;
+}
+
+#sidebar-menu .nav-link .fas {
+    margin-right: 8px;
+}
+
+#message-view, #compose, #chat {
+    background: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+#messages-list .list-group-item, 
+#outbox-list .list-group-item,
+#drafts-list .list-group-item,
+#requests-list .list-group-item,
+#trash-list .list-group-item {
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#messages-list .list-group-item:hover, 
+#outbox-list .list-group-item:hover,
+#drafts-list .list-group-item:hover,
+#requests-list .list-group-item:hover,
+#trash-list .list-group-item:hover {
+    background-color: #f1f3f4;
+}
+
+#chat-window {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1rem;
+    overflow-y: auto;
+}
+
+.chat-message {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.chat-message:hover {
+    background-color: #f1f3f4;
+}
+
+.chat-message .message-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn-primary {
+    background-color: #1a73e8;
+    border-color: #1a73e8;
+}
+
+.btn-primary:hover {
+    background-color: #155ab6;
+}
+
+.btn-warning {
+    background-color: #ffc107;
+    border-color: #ffc107;
+}
+
+.btn-warning:hover {
+    background-color: #e0a800;
+}
+
+.btn-info {
+    background-color: #17a2b8;
+    border-color: #17a2b8;
+}
+
+.btn-info:hover {
+    background-color: #138496;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+}
+
+.btn-light {
+    background-color: #f8f9fa;
+    border-color: #f8f9fa;
+}
+
+.btn-light:hover {
+    background-color: #e2e6ea;
+}

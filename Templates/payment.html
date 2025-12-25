@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Page</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='payment.css')}}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+</head>
+<body>
+    <div class="back" style="display: flex; align-items: center; color: #050404;" >
+        <span class="material-symbols-outlined" style="color: #050505;margin: 10px;">
+            arrow_back_ios
+            </span>
+            <h3>Go Back</h3>
+    </div>
+    <div class="container">
+        <div class="payment-options">
+            <h2>Choose Payment Method</h2>
+            <form>
+                <label>
+                    <input type="radio" name="payment-method" value="upi">
+                    <img src="{{ url_for('static', filename='icons/upi.png') }}" alt="UPI" class="icon"> UPI
+                </label>
+                <label>
+                    <input type="radio" name="payment-method" value="net-banking">
+                    <img src="{{ url_for('static', filename='icons/net-banking.png') }}" alt="Net Banking" class="icon"> Net Banking
+                </label>
+                <label>
+                    <input type="radio" name="payment-method" value="debit-credit-card">
+                    <img src="{{ url_for('static', filename='icons/debit-credit-card.png') }}" alt="Debit/Credit Card" class="icon"> Debit/Credit Card
+                </label>
+                <label>
+                    <input type="radio" name="payment-method" value="wallet">
+                    <img src="{{ url_for('static', filename='icons/wallet.png') }}" alt="Wallet" class="icon"> Wallet
+                </label>
+                <label>
+                    <input type="radio" name="payment-method" value="qr-code">
+                    <img src="{{ url_for('static', filename='icons/qr-code.png') }}" alt="QR Code" class="icon"> QR Code
+                </label>
+            </form>
+            
+        </div>
+        <div class="payment-details">
+            <h2>Payment Details</h2>
+            <form action="{{url_for('pay',transaction_id=payments.transaction_id)}}" methods='post'>
+                <!-- UPI Payment Details -->
+                <div class="upi-details payment-detail">
+                    <label for="upi-id">UPI ID:</label>
+                    <input type="text" id="upi-id" name="upi-id">
+                    <div class="validation-message" id="upi-validation-message">Invalid UPI ID</div>
+                </div>
+
+               <!-- QR Code Payment Details -->
+               <div class="qr-code-details payment-detail">
+                <label for="qr-code">Scan QR Code to Pay:</label>
+                <img src="icons/qr-code.png" alt="QR Code" style="width:200px; height:200px; display:block; margin:20px auto;">
+            </div>
+                <!-- Net Banking Payment Details -->
+                <div class="net-banking-details payment-detail">
+                    <label for="bank-name">Bank Name:</label>
+                    <select id="bank-name" name="bank-name">
+                        <!-- Add all banks here -->
+                        <option value="bank-of-baroda">Bank of Baroda</option>
+                        <option value="bank-of-india">Bank of India</option>
+                        <option value="bank-of-maharashtra">Bank of Maharashtra</option>
+                        <!-- ... (Add other public sector banks as needed) ... -->
+                        <option value="canara-bank">Canara Bank</option>
+                        <option value="central-bank-of-india">Central Bank of India</option>
+                        <option value="indian-bank">Indian Bank</option>
+                        <option value="indian-overseas-bank">Indian Overseas Bank</option>
+                        <option value="punjab-and-sind-bank">Punjab and Sind Bank</option>
+                        <option value="punjab-national-bank">Punjab National Bank</option>
+                        <option value="state-bank-of-india">State Bank of India</option>
+                        <option value="uco-bank">UCO Bank</option>
+                        <option value="union-bank-of-india">Union Bank of India</option>
+                        <!-- Private Sector Banks -->
+                        <option value="axis-bank">Axis Bank</option>
+                        <option value="bandhan-bank">Bandhan Bank</option>
+                        <option value="csb-bank">CSB Bank</option>
+                        <option value="city-union-bank">City Union Bank</option>
+                        <option value="dcb-bank">DCB Bank</option>
+                        <option value="dhanlaxmi-bank">Dhanlaxmi Bank</option>
+                        <option value="federal-bank">Federal Bank</option>
+                        <option value="hdfc-bank">HDFC Bank</option>
+                        <option value="icici-bank">ICICI Bank</option>
+                        <option value="idbi-bank">IDBI Bank</option>
+                    </select>
+                </div>
+                <!-- Debit/Credit Card Payment Details -->
+                <div class="debit-credit-card-details payment-detail">
+                    <div class="card-input">
+                        <img src="icons/card-number.png" alt="Card Number Icon">
+                        <input type="text" id="card-number" name="card-number" placeholder="Card Number">
+                    </div>
+                    <div class="card-input">
+                        <img src="icons/expiry-date.png" alt="Expiry Date Icon">
+                        <input type="month" id="expiry-date" name="expiry-date" placeholder="MM/YY">
+                    </div>
+                    <div class="card-input">
+                        <img src="icons/cvv.png" alt="CVV Icon">
+                        <input type="text" id="cvv" name="cvv" placeholder="CVV">
+                    </div>
+                </div>
+                <!-- Wallet Payment Details -->
+                <div class="wallet-details payment-detail">
+                    <label for="wallet-type">Wallet Type:</label>
+                    <select id="wallet-type" name="wallet-type">
+                        <!-- Add all wallet types here -->
+                        <option value="PayTm">PayTm</option>
+                        <option value="Phone-pe">Phone pe</option>
+                        <option value="Google">Google pay</option>
+                        <option value="Mobikpay">Mobikpay</option>
+                        <option value="Freecharge">Freecharge</option>
+                        <option value="Amazon">Amazon</option>
+                    </select>
+                </div>
+                <button type="submit">Pay Now</button>
+                
+            </form>
+        </div>
+        <div class="campaign-info">
+            <img src="https://img.freepik.com/free-vector/organic-flat-design-public-relations-concept_23-2148909838.jpg?t=st=1723367580~exp=1723371180~hmac=4e09d4afa9a90cbec87d8e935996c4735e20eea30a4a95fcb9d52e5e11a59696&w=740" alt="campaigns">
+            <h2>Transaction Id : {{payments.transaction_id}}</h2>
+            <p>Campaign Id : {{payments.campaign_id}}</p>
+        </div>
+    </div>
+    <script>
+document.addEventListener('DOMContentLoaded', function () {
+    const paymentMethods = document.querySelectorAll('input[name="payment-method"]');
+    const paymentDetails = document.querySelectorAll('.payment-detail');
+
+    paymentMethods.forEach(method => {
+        method.addEventListener('change', function () {
+            // Hide all payment details initially
+            paymentDetails.forEach(detail => {
+                detail.style.display = 'none';
+            });
+
+            // Show the selected payment method details
+            const selectedMethod = document.querySelector(`.${method.value}-details`);
+            if (selectedMethod) {
+                selectedMethod.style.display = 'block';
+            }
+        });
+    });
+
+    const upiInput = document.getElementById('upi-id');
+    const upiValidationMessage = document.getElementById('upi-validation-message');
+
+    upiInput.addEventListener('input', function () {
+        const upiPattern = /^[\w.-]+@[\w.-]+$/;
+        if (upiPattern.test(upiInput.value)) {
+            upiInput.classList.remove('invalid');
+            upiInput.classList.add('valid');
+            upiValidationMessage.style.display = 'none';
+        } else {
+            upiInput.classList.remove('valid');
+            upiInput.classList.add('invalid');
+            upiValidationMessage.style.display = 'block';
+        }
+    });
+});
+const expiryDateInput = document.getElementById('expiry-date');
+            expiryDateInput.addEventListener('input', function (event) {
+                let value = expiryDateInput.value;
+                if (value.length === 2 && event.inputType !== 'deleteContentBackward') {
+                    expiryDateInput.value = value + '/';
+                }
+            });
+
+            $('#expiry-date').datepicker({
+                changeMonth: true,
+                changeYear: true,
+                showButtonPanel: true,
+                dateFormat: 'mm/yy',
+                onClose: function(dateText, inst) { 
+                    function isDonePressed(){
+                        return ($('#ui-datepicker-div .ui-datepicker-close').html() == 'Done');
+                    }
+                    if (isDonePressed()){
+                        var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+                        var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+                        $('#expiry-date').val($.datepicker.formatDate('mm/yy', new Date(year, month, 1)));
+                    }
+                }
+            }).focus(function () {
+                $('.ui-datepicker-calendar').hide();
+                $('#ui-datepicker-div').position({
+                    my: 'center top',
+                    at: 'center bottom',
+                    of: $(this)
+                });
+            });
+    </script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+</body>
+</html>

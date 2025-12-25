@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Reset</title>
+    <style>
+        #body1 {
+            font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+          
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 60vh;
+            margin: 0;
+        }
+        .container {
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            text-align: center;
+        }
+        .modal, .modal_2 {
+            display: none;
+            background: rgba(0, 0, 0, 0.6);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content, .modal_2-content {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            width: 300px;
+        }
+        input[type="email"], input[type="password"], input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            background: #007bff;
+            border: none;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .background-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1; 
+        }
+        .header {
+           
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #21232d;
+    background-size: cover;
+    color: #fff;
+}
+
+.header img {
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+}
+
+#logo {
+    display: flex;
+    align-items: center;
+}
+
+#logo img {
+    margin-right: 15px;
+}
+
+#logo h1 {
+    color: #fff;
+    font-size: 24px;
+}
+
+#links {
+    display: flex;
+    gap: 20px;
+}
+
+#links a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+#links a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+    </style>
+</head>
+<body>
+
+    <video autoplay muted loop class="background-video">
+        <source src="https://videos.pexels.com/video-files/3141210/3141210-uhd_2560_1440_25fps.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <div class="header">
+        <div id="logo">
+            <img src="{{ url_for('static' ,filename='logo.jpeg') }}" width="5%" height="10%">        </div>
+            <h2>Re-Setup Password</h2>
+        <div id="links">
+            <a href="{{ url_for('login') }}">Go back</a>
+            <a href="{{ url_for('home')}}">Home</a>
+           <a href="{{ url_for('privacy') }}">Privacy Policy</a>
+            <a href="{{ url_for('about') }}">About</a>
+           <a href="{{ url_for('help') }}">Help</a>
+        </div>
+    </div>
+    <h1 style="text-align: center; font-weight: bold;color: #fff;">Forgot password !! No need to worry reset your password here...</h1>
+
+     <div id="body1">
+        <div class="container">
+            <div id="email">
+                <label for="email_input"><b>Enter your Email-id</b></label>
+                <input type="email" name="email" id="email_input" required>
+                <button id="verifyButton">Verify</button>
+            </div>
+        </div>
+        <div id="modal" class="modal">
+            <div class="modal-content">
+                <label for="new_password">Enter New Password</label>
+                <input type="password" name="new_password" id="new_password" required>
+                <label for="cnf_password">Enter to Confirm Password</label>
+                <input type="password" name="cnf_password" id="cnf_password" required>
+                <button id="validateButton">Validate</button>
+            </div>
+        </div>
+        <div id="modal_2" class="modal_2">
+            <div class="modal_2-content">
+                <label for="passcode">Enter passcode to verify and set password</label>
+                <input type="text" name="passcode" id="passcode">
+                <button id="verifySetPasswordButton">Verify and Set Password</button>
+            </div>
+        </div>
+     </div>
+    <script>
+        document.getElementById('verifyButton').addEventListener('click', function() {
+            const email = document.getElementById('email_input').value;
+            fetch('/forgot', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ action: 'verifyEmail', email: email })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.exists) {
+                    document.getElementById('modal').style.display = 'flex';
+                } else {
+                    alert('Email does not exist');
+                }
+            });
+        });
+
+        document.getElementById('validateButton').addEventListener('click', function() {
+            const newPassword = document.getElementById('new_password').value;
+            const confirmPassword = document.getElementById('cnf_password').value;
+            if (newPassword === confirmPassword) {
+                fetch('/forgot', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ action: 'requestOTP', newPassword: newPassword })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'otp_sent') {
+                        document.getElementById('modal').style.display = 'none';
+                        document.getElementById('modal_2').style.display = 'flex';
+                    } else {
+                        alert('Error sending OTP');
+                    }
+                });
+            } else {
+                alert('Passwords do not match');
+            }
+        });
+
+        document.getElementById('verifySetPasswordButton').addEventListener('click', function() {
+            const passcode = document.getElementById('passcode').value;
+            fetch('/forgot', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ action: 'setPassword', passcode: passcode })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Password Set Successfully!');
+                    document.getElementById('modal_2').style.display = 'none';
+                    window.location.href = '/login'
+                } else {
+                    alert('Failed to set password: ' + data.message);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

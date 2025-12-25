@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign-Up - IEAS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='header.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='Sponsor_reg.css') }}">
+</head>
+<style>
+#categor1 {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 10px;
+    border: 1px solid grey;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+</style>
+<body>
+    <div class="header">
+        <div id="logo">
+            <img src="{{ url_for('static', filename='logo.jpeg') }}" alt="IEAS Logo">
+        </div>
+        <div id="links">
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{ url_for('about') }}">About</a>
+            <a href="{{ url_for('privacy') }}">Privacy Policy</a>
+            <a href="{{ url_for('help') }}">Help</a>
+        </div>
+    </div>
+    <div class="container">
+        <h2>Sponsor Registration</h2>
+
+        <form action="{{ url_for('signup', data='sponsor') }}" method="post">
+            <div id="categor1">
+                <h5>Category:</h5>
+                <label for="company-radio">Company</label>
+                <input type="radio" name="category" value="company" id="company-radio">
+                <label for="individual-radio">Individual</label>
+                <input type="radio" name="category" value="individual" id="individual-radio">
+            </div>
+            <br>
+            <div id="individual-fields" class="form-section">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="first-name">First Name</label>
+                        <input type="text" id="first-name" name="first_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="last-name">Last Name</label>
+                        <input type="text" id="last-name" name="last_name" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="dob">Date of Birth</label>
+                        <input type="date" id="dob" name="dob" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="gender">Gender</label>
+                        <select id="gender" name="gender" required>
+                            <option value="" disabled selected>Select your gender</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div id="company-fields" class="form-section">
+                <div class="form-group">
+                    <label for="company-name">Company Name</label>
+                    <input type="text" id="company-name" name="company_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="gst-no">GST No.</label>
+                    <input type="text" id="gst-no" name="gst_no" required>
+                </div>
+                <div class="form-group">
+                    <label for="cin-no">CIN No.</label>
+                    <input type="text" id="cin-no" name="cin_no" required>
+                </div>
+            </div>
+            <div id="common-fields" class="form-section">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="industry">Industry</label>
+                    <input type="text" id="industry" name="industry" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm-password">Confirm Password</label>
+                        <input type="password" id="confirm-password" name="confirm_password" required>
+                    </div>
+                </div>
+
+            </div>
+            <div class="form-group">
+                <button type="submit">Register Now</button>
+            </div>
+        </form>
+        <a href="{{ url_for('login') }}">Already have an account? Sign in</a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const companyRadio = document.getElementById('company-radio');
+            const individualRadio = document.getElementById('individual-radio');
+            const individualFields = document.getElementById('individual-fields');
+            const companyFields = document.getElementById('company-fields');
+            const commonFields = document.getElementById('common-fields');
+            const passwordField = document.getElementById('password');
+            const confirmPasswordField = document.getElementById('confirm-password');
+            const form = document.querySelector('form');
+
+            function updateFields() {
+                if (companyRadio.checked) {
+                    individualFields.style.display = 'none';
+                    companyFields.style.display = 'block';
+                    commonFields.style.display = 'block';
+                    document.querySelectorAll('#company-fields input').forEach(input => input.required = true);
+                    document.querySelectorAll('#individual-fields input, #individual-fields select').forEach(input => input.required = false);
+                } else if (individualRadio.checked) {
+                    individualFields.style.display = 'block';
+                    companyFields.style.display = 'none';
+                    commonFields.style.display = 'block';
+                    document.querySelectorAll('#individual-fields input, #individual-fields select').forEach(input => input.required = true);
+                    document.querySelectorAll('#company-fields input').forEach(input => input.required = false);
+                } else {
+                    individualFields.style.display = 'none';
+                    companyFields.style.display = 'none';
+                    commonFields.style.display = 'none';
+                }
+            }
+
+            companyRadio.addEventListener('change', updateFields);
+            individualRadio.addEventListener('change', updateFields);
+
+            form.addEventListener('submit', (e) => {
+                if (passwordField.value !== confirmPasswordField.value) {
+                    alert('Password and confirm password do not match');
+                    e.preventDefault();
+                    return;
+                }
+
+                if (!companyRadio.checked && !individualRadio.checked) {
+                    alert('Please select a category');
+                    e.preventDefault();
+                    return;
+                }
+            });
+
+            updateFields();
+        });
+    </script>
+</body>
+</html>
