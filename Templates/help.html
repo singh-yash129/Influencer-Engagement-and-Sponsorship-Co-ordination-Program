@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help</title>
+    <style>
+    #body1 {
+        font-family: Arial, sans-serif;
+        background:linear-gradient(to bottom,white,lightgreen);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        padding: 20px;
+    }
+
+    
+    form {
+        background: #fff;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        width: 500px;
+    }
+    
+    form label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+    }
+    
+    form input[type="email"],form input[type='text'],
+    form select,
+    form textarea {
+        width: calc(100% - 20px); 
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        resize: vertical;
+    }
+    
+    form button {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        background: #28a745;
+        color: #fff;
+        font-size: 16px;
+        cursor: pointer;
+    }
+    
+    form button:hover {
+        background: #218838;
+    }
+    </style>
+</head>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+<body>
+    <span class="material-symbols-outlined" style="cursor: pointer;z-index: 1; padding: 10px;" onclick="window.history.back()">
+        arrow_back
+        </span>
+    <h1 style="text-align: center;font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Help Form :</h1>
+    <div id="body1">
+        <form action="{{url_for('help')}}" method="post">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" placeholder="Enter your name" required>
+            <label for="email">Enter Your Email-id:</label>
+            <input type="email" name="email" placeholder="Email..." required>
+            
+            <label for="issue">Issue Type:</label>
+            <select name="issue" id="issue">
+                <option value="" disabled >Click here</option>
+                <option value="Registration Issue">Registration Issue</option>
+                <option value="Login Issue">Login Issue</option>
+                <option value="Forgot password">Password Issue</option>
+                <option value="Account Issue">Account Issue</option>
+                <option value="others">Others</option>
+            </select>
+            
+            <label for="description">Describe Your Issue:</label>
+            <textarea name="description" id="description" rows="4" cols="50" placeholder="Describe your issue..." required></textarea>
+    
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</body>
+</html>

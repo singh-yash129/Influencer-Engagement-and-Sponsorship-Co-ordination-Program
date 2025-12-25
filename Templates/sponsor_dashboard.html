@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='find.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='sponsor_dash.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.5.0/nouislider.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.5.0/nouislider.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        .material-symbols-outlined {
+            background-color: wheat;
+            border: 1px solid grey;
+            border-radius: 50%;
+            padding: 5px;
+            cursor: pointer;
+        }
+
+        .material-symbols-outlined:hover {
+            background-color: beige;
+        }
+
+        .darkmode {
+            background-color: black;
+            color: rgb(255, 255, 255);
+        }
+
+        #myNoti {
+            position: absolute;
+            top: 120px;
+            right: 290px;
+            background-color: #96ebe5;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            width: 300px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            overflow-y: auto;
+            max-height: 300px;
+            padding-right: 10px;
+            word-wrap: normal;
+            z-index: 100;
+        }
+
+        .cls,
+        .cls2,
+        .cls3,
+        .cls4,
+        .cls5,
+        .cls6 {
+            cursor: pointer;
+            font-size: 18px;
+            margin-right: 10px;
+            float: right;
+        }
+
+        .cls:hover,
+        .cls2:hover,
+        .cls3:hover,
+        .cls4:hover,
+        .cls5:hover,
+        .cls6:hover {
+            color: red;
+        }
+
+        #set {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            position: absolute;
+            top: 120px;
+            right: 190px;
+            padding: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            overflow-y: auto;
+            max-height: 400px;
+            padding-right: 10px;
+            width: 300px;
+            background-color: cornsilk;
+            z-index: 100;
+        }
+
+        #alg {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            border-radius: 10px;
+            border: 1px solid grey;
+            cursor: pointer;
+           
+
+        }
+
+        #alg:hover,
+        #alg1:hover {
+            background-color: bisque;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 94px;
+            height: 30px;
+            background: #fff;
+            border-radius: 20px;
+            right: 13px;
+            top: 0.2cm;
+        }
+
+        .switch input {
+            display: none;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 22px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ffffff;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "Disable";
+            height: 28px;
+            width: 47px;
+            left: 4px;
+            bottom: 3px;
+            background-color: rgb(14, 206, 142);
+            transition: .4s;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: white;
+        }
+
+        input:checked+.slider {
+            background-color: #2196F3;
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(38px);
+            background-color: #0cbcd0;
+            content: "Enable";
+        }
+
+        #alg1 {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-radius: 10px;
+            border: 1px solid grey;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        #hs2 {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            margin-left: -5px;
+        }
+
+        #change_password,
+        #delete {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        #cp {
+            width: 400px;
+            margin: 0 auto;
+        }
+
+        #cp h4 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #cp form,
+        #delete form {
+            margin-top: 20px;
+        }
+
+        #cp label,
+        #delete label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        #cp input[type="password"],
+        #delete input[type='email'] {
+            width: 95%;
+            height: 30px;
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #cp button[type="submit"],
+        #delete button[type='submit'] {
+            width: 100%;
+            height: 40px;
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #cp button[type="submit"]:hover,
+        #delete button[type='submit']:hover {
+            background-color: #3e8e41;
+        }
+
+        #edit {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #75a9d1;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 900px;
+            z-index: 100;
+        }
+
+
+
+        #dataset {
+            display: flex;
+            flex-direction: column;
+
+            padding: 20px;
+        }
+
+        #edit form {
+            width: 100%;
+        }
+
+        #edit label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        #edit #row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        #edit #col {
+            display: flex;
+            flex-direction: column;
+        }
+
+        #edit input[type="text"],
+        #edit input[type="date"],
+        #edit input[type="tel"],
+        #edit input[type="email"],
+        #edit textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #edit textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        #edit input[type="text"]:focus,
+        #edit input[type="date"]:focus,
+        #edit input[type="tel"]:focus,
+        #edit input[type="email"]:focus,
+        #edit textarea:focus {
+            outline: none;
+            border-color: #aaa;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #edit button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 4px;
+            margin: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        #edit button[type="reset"] {
+            background-color: #dc3545;
+        }
+
+        #edit button:hover {
+            background-color: #0056b3;
+        }
+
+        #edit button[type="reset"]:hover {
+            background-color: #c82333;
+        }
+    </style>
+    <script>
+
+
+        function myFunction() {
+            var element = document.body;
+            var x = document.getElementById("myDIV");
+            element.classList.toggle("darkmode");
+            if (element.classList.contains("darkmode")) {
+                x.innerHTML = "light_mode";
+            } else {
+                x.innerHTML = "dark_mode";
+            }
+        }
+        
+
+        function myNotification() {
+            var x = document.getElementById("myNoti");
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+        }
+        document.addEventListener("DOMContentLoaded", function() {
+            var closeIcon = document.querySelector(".cls");
+            closeIcon.addEventListener("click", function() {
+                document.getElementById("myNoti").style.display = "none";
+            });
+        });
+
+        function mySettings() {
+            var x = document.getElementById("set");
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+        }
+        document.addEventListener("DOMContentLoaded", function() {
+            var closeIcon = document.querySelector(".cls2");
+            closeIcon.addEventListener("click", function() {
+                document.getElementById("set").style.display = "none";
+            });
+        });
+
+        function myChange() {
+            var x = document.getElementById("change_password");
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+        }
+        document.addEventListener("DOMContentLoaded", function() {
+            var closeIcon = document.querySelector(".cls3");
+            closeIcon.addEventListener("click", function() {
+                document.getElementById("change_password").style.display = "none";
+            });
+        });
+
+        function myEdit() {
+            var x = document.getElementById("edit");
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+        }
+        document.addEventListener("DOMContentLoaded", function() {
+            var closeIcon = document.querySelector(".cls5");
+            closeIcon.addEventListener("click", function() {
+                document.getElementById("edit").style.display = "none";
+            });
+        });
+
+        function myDelete() {
+            var x = document.getElementById("delete");
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+        }
+        document.addEventListener("DOMContentLoaded", function() {
+            var closeIcon = document.querySelector(".cls4");
+            closeIcon.addEventListener("click", function() {
+                document.getElementById("delete").style.display = "none";
+            });
+        });
+
+        function myVerify() {
+            var x = document.getElementById("two_step_verification");
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+        }
+        document.addEventListener("DOMContentLoaded", function() {
+            var closeIcon = document.querySelector(".cls6");
+            closeIcon.addEventListener("click", function() {
+                document.getElementById("two_step_verification").style.display = "none";
+            });
+        });
+    </script>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Function to setup input focus movement
+            function setupInputFocus(containerSelector) {
+                const inputs = document.querySelectorAll(`${containerSelector} input`);
+                inputs.forEach((input, index) => {
+                    input.addEventListener('input', function() {
+                        if (this.value.length === this.maxLength) {
+                            const nextInput = inputs[index + 1];
+                            if (nextInput) {
+                                nextInput.focus();
+                            }
+                        }
+                    });
+                });
+            }
+
+            // Initialize input focus movement
+            setupInputFocus('#inp');
+            setupInputFocus('#inp2');
+            setupInputFocus('#inp_disable');
+
+            const checkbox = document.querySelector('#verify-checkbox');
+            const verifyInput = document.querySelector('#verify-input');
+            const enableDiv = document.querySelector('#enable');
+            const disableDiv = document.querySelector('#disable');
+
+            // Function to toggle the visibility of input sections
+            function toggleInputSections() {
+                if (checkbox.checked) {
+                    enableDiv.style.display = '{{ spo.passcode == 0 }}' === 'True' ? 'block' : 'none';
+                    disableDiv.style.display = 'none';
+                } else {
+                    enableDiv.style.display = 'none';
+                    disableDiv.style.display = '{{ spo.passcode != 0 }}' === 'True' ? 'block' : 'none';
+                }
+            }
+
+            // Initial toggle state setup
+            toggleInputSections();
+
+            checkbox.addEventListener('change', function() {
+                verifyInput.value = checkbox.checked ? 'True' : 'False';
+                toggleInputSections();
+            });
+
+
+
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const checkbox = document.querySelector('#visibility-checkbox');
+            const visibilityInput = document.querySelector('#visibility-input');
+            const form = document.querySelector('#visibility-form');
+
+            checkbox.addEventListener('change', function() {
+                visibilityInput.value = checkbox.checked ? 'on' : 'off';
+                form.submit();
+            });
+        });
+    </script>
+
+</head>
+
+<body>
+    <div id="two_step_verification" style="display: none;">
+        <span class="cls6" style="float: right;" id="closeModalButton">&times;</span><br>
+        <div id="fields">
+            <form id="verify-form" action="{{ url_for('sponsor_dashboard', user_1=spo.username) }}" method="post">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center; justify-content: flex-start;">
+                        <span class="material-symbols-outlined">key</span>
+                        <h4>Two-Factor Authentication</h4>
+                    </div>
+                    <input type="hidden" name="verify" id="verify-input" value="{{ 'True' if spo.two_factor_enabled else 'False' }}">
+                    <label class="switch">
+                        <input type="checkbox" id="verify-checkbox" {% if spo.two_factor_enabled =='True' %}checked{% endif %}>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div id="enable" style="display: none;">
+                    <div id="ena">
+                        <p><strong>Enter 6-digit passcode to set up:</strong></p>
+                        <div style="display: flex; flex-direction: column;">
+                            <label for="Set">Setup passcode</label>
+                            <div id="inp">
+                                {% for i in range(1, 7) %}
+                                <input type="text" name="inp_{{ i }}" id="inp_{{ i }}" maxlength="1" placeholder=".">
+                                {% endfor %}
+                            </div><br>
+                            <div style="display: flex; flex-direction: column;">
+                                <label for="set">Confirm passcode </label>
+                                <div id="inp2">
+                                    {% for i in range(7, 13) %}
+                                    <input type="text" name="inp_{{ i }}" id="inp_{{ i }}" maxlength="1" placeholder=".">
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <button type="submit" name="setup" value="setup">Continue and Setup</button>
+                        </div>
+                    </div>
+
+                </div>
+                <div id="disable" style="display: none;">
+                    <div id="dis">
+                        <p><strong>Enter 6-digit old passcode to disable:</strong></p>
+                        <div id="inp_disable">
+                            {% for i in range(13, 19) %}
+                            <input type="text" name="inp_{{ i }}" id="inp_{{ i }}" maxlength="1" placeholder=".">
+                            {% endfor %}
+                        </div>
+                        <button type="submit" name="disable" value="disable">Disable Now</button>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="edit" style="display: none;">
+        <span class="cls5">&times;</span>
+        <h2 style="text-align: center;">Edit Data</h2>
+
+        <div id="dataset">
+            <form action="{{ url_for('edit_data', user1=spo.username) }}" method="post">
+                {% if spo.category == 'None' or spo.category == 'individual' %}
+                <div id="row">
+                    <div id="col">
+                        <label for="first_name">First Name :</label>
+                        <input type="text" name="first_name" id="first_name" value="{{ spo.first_name }}">
+                    </div>
+                    <div id="col">
+                        <label for="last_name">Last Name:</label>
+                        <input type="text" name="last_name" id="last_name" value="{{ spo.last_name }}">
+                    </div>
+                </div>
+                <div id="row">
+                    <div id="col">
+                        <label for="dob">DOB :</label>
+                        <input type="date" name="date" id="date" value="{{ spo.dob }}">
+                    </div>
+                    <div id="col">
+                        <label for="gender">Gender</label>
+                        <input type="text" name="gender" id="gender" value="{{ spo.gender }}">
+                    </div>
+                </div>
+                {% elif spo.category == 'company' %}
+                <div id="row">
+                    <div id="col">
+                        <label for="company_name">Company Name :</label>
+                        <input type="text" name="company_name" id="company_name" value="{{ spo.company_name }}">
+                    </div>
+                    <div id="col">
+                        <label for="gst_no">GST No :</label>
+                        <input type="tel" name="gst_no" id="gst_no" value="{{ spo.gst_no }}">
+                    </div>
+                    <div id="col">
+                        <label for="cin_no">CIN No :</label>
+                        <input type="tel" name="cin_no" id="cin_no" value="{{ spo.cin_no }}">
+                    </div>
+                </div>
+                {% endif %}
+                <div id="row">
+                    <div id="col">
+                        <label for="username">Username :</label>
+                        <input type="text" name="username" id="username" value="{{ spo.username }}">
+                    </div>
+                    <div id="col">
+                        <label for="industry">Industry :</label>
+                        <input type="text" name="industry" id="industry" value="{{ spo.industry }}">
+                    </div>
+                    <div id="col">
+                        <label for="email">Email :</label>
+                        <input type="email" name="email" id="email" value="{{ spo.email_id }}" readonly style="background: grey;">
+                    </div>
+                </div>
+                <div id="col">
+                    <label for="bio">Bio :</label>
+                    <textarea name="bio" id="bio" rows="50" cols="40" placeholder="Describe...">{{ spo.bio }}</textarea>
+                </div>
+                <div id="btn" style="text-align: center; margin-top: 20px; display: flex; justify-content: center;">
+                    <button type="submit">Save</button>
+                    <button type="reset">Reset</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <div id="delete" style="display: none;">
+        <span class="cls4">&times;</span>
+        <br>
+        <form action="{{url_for('delete_account',user=spo.username)}}" method='post'>
+            <label for="account_delete">Are you sure that you want to delete you account ? If YES then <br>Enter your Email</label>
+            <input type="email" name="email" id="email" required>
+            <button type="submit">Delete Account</button>
+        </form>
+    </div>
+    <div id="change_password" style="display: none;">
+        <div id="cp">
+            <span class="cls3">&times;</span>
+            <h4>Change-Password</h4>
+
+            <form action="{{ url_for('change_password', user=spo.username) }}" method="post">
+                <label for="old-password"> Old Password :</label>
+                <input type="password" name="old_pass" id="old_pass" required>
+                <label for="new_password"> New Password :</label>
+                <input type="password" name="new_pass" id="new pass" required>
+                <label for="Confirm password">Confirm Password :</label>
+                <input type="password" name="cnf_pass" id="cnf_pass" required>
+                <button type="submit" id="change_password ">Change Password</button>
+            </form>
+        </div>
+    </div>
+    <div id="myNoti" style="display: none;">
+        <span class="cls" style="float: right;">&times;</span>
+        <p><Strong>
+                <h5>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nesciunt nostrum laboriosam quos a. Quam neque nam fuga, non, error dolore magni dolorem optio, quaerat iure unde rerum at? Sit, error?</h5>
+            </Strong></p>
+        <hr>
+        <p><strong>
+                <h5>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Distinctio, hic. Tempore rerum, ab unde, doloribus recusandae debitis sit odit, fugit sed numquam error et libero delectus asperiores! Exercitationem, hic id.</h5>
+            </strong></p>
+        <hr>
+    </div>
+    <div id="set" style="display: none;">
+        <span class="cls2" style="float: right;">&times;</span>
+        <br><br>
+        <div id="alg" onclick="myVerify()">
+            <span class="material-symbols-outlined">key</span>
+            <h4>Two-Factor-Authention</h4>
+        </div>
+        <div id="alg" onclick="myChange()">
+            <span class="material-symbols-outlined">
+                password
+            </span>
+            <h4>Change Password</h4>
+        </div>
+        <div id="alg" onclick="myDelete()">
+            <span class="material-symbols-outlined">delete</span>
+            <h4>Delete Account</h4>
+        </div>
+        <div>
+            <div id="alg1">
+                <div id="hs2">
+                    <span class="material-symbols-outlined">visibility</span>
+                    <h4>Visibility</h4>
+                </div>
+                <form id="visibility-form" action="{{ url_for('sponsor_dashboard', user_1=spo.username) }}" method="post" style="all: unset;">
+                    <input type="hidden" name="visibility" id="visibility-input" value="{{ 'on' if spo.visibility else 'off' }}">
+                    <label class="switch">
+                        <input type="checkbox" id="visibility-checkbox" {% if spo.visibility == 'on' %}checked{% endif %}>
+                        <span class="slider"></span>
+                    </label>
+                </form>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="box">
+        <div class="header">
+            <div id="logo">
+                <img src="{{ url_for('static', filename='logo.jpeg') }}" alt="IEAS Logo">
+            </div>
+            <h2>Sponsor</h2>
+            <div id="links">
+                <a href="">Profile</a>
+                <a href="{{ url_for('add_campaign',user=current_user.username) }}">Campaigns</a>
+                <a href="{{ url_for('spo_inf_search') }}">Find</a>
+                <a href="{{ url_for('home') }}">Stats</a>
+                <a href="{{ url_for('logout') }}">Logout</a>
+            </div>
+        </div>
+        <div class="main">
+            <div class="section1">
+                <form action="{{ url_for('sponsor_dashboard', user_1=spo.username) }}" method="post" enctype="multipart/form-data">
+                    <div class="profile-picture">
+                        <input class="file-uploader" type="file" name="profile_picture" accept="image/*" onchange="previewImage(event)">
+                        <img id="output" alt="Profile Picture Preview">
+                    </div>
+                    <br>
+                    <div id="buttons">
+                        <button type="submit" name="upload_profile" value="upload_profile">Upload</button>
+                        <button type="submit" name="remove_profile" value="remove_profile">Remove</button>
+                    </div>
+                </form>
+                {% if spo.category =='company'%}
+                    <h2>Company : {{spo.company_name}} </h2>
+                    <h2>GST NO : {{spo.gst_no}}</h2>
+                    <h2>CIN NO : {{spo.cin_no}}</h2>
+                    <h2 style="color: blue;">Verified* </h2>
+                    <h2><details>{{spo.bio}}</details></h2>
+                
+                    <address>Contact : {{spo.email_id}}</address>
+                {%else%}
+                    <h2>Individual : {{spo.first_name}}{{spo.last_name}} </h2>
+                    <h2>Gender : {{spo.gender}}</h2>
+                    <h2>Username : {{spo.username}}</h2>
+                    <h2 style="color: blue;">Verified: </h2>
+                    <h2><details>{{spo.description}}</details></h2>
+            
+                    <address>Contact : {{spo.email_id}}</address>     
+                {%endif%}                   
+            </div>
+            <div id="welcome">
+                <div id="icons" style="display: flex;align-content: center; flex-wrap: wrap;justify-content: flex-end;gap: 10px; padding: 10px;">
+
+                    <span class="material-symbols-outlined" onclick="myNotification()">
+                        notifications
+                    </span>
+                    <span class="material-symbols-outlined" id="myDIV" onclick="myFunction()">
+                        dark_mode
+                    </span>
+
+                    <span class="material-symbols-outlined" onclick="window.location.href='{{url_for('spon_req',user=current_user.username)}}'">
+                        person_add
+                    </span>
+                    <span class="material-symbols-outlined" onclick="mySettings()">
+                        settings
+                    </span>
+                    <span class="material-symbols-outlined" onclick="myEdit()">
+                        edit
+                    </span>
+                    <span class="material-symbols-outlined" onclick="window.location.href='{{url_for('payments',user=spo.username)}}'">
+                        payments
+                    </span>
+                    <span class="material-symbols-outlined"  onclick="window.location.href='{{url_for('flagged_users')}}'">
+                        flag
+                    </span>
+                </div>
+                <div id="wel">
+                    <video autoplay muted loop class="background-video">
+                        <source src='https://drive.google.com/file/d/1uhykjHDkmcPmC5oAP7I8pl-hmURNqSbz/view?usp=sharing' type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <h2>Welcome Company !!</h2>
+                    <h3>Word-of-mouth referrals are gold. Delight your existing customers, and they’ll spread the word.</h3>
+                    <h3>Think of social media as a place to build relationships, not just sell products.</h3>
+                </div>
+                <h2>Statistics :</h2>
+                <div id="stats">
+                    <div class="chart-container">
+                        <h3>Sponsor Analysis</h3>
+                        <select id="sponsorChartType">
+                            <option value="bar">Bar</option>
+                            <option value="line">Line</option>
+                            <option value="pie">Pie</option>
+                            <option value="doughnut">Doughnut</option>
+                            <option value="polarArea">Polar Area</option>
+                            <option value="radar">Radar</option>
+                            <option value="bubble">Bubble</option>
+                            <option value="scatter">Scatter</option>
+                        </select>
+                        <canvas id="sponsorChart"></canvas>
+                    </div>
+                    
+                </div>
+            </div>
+
+        </div>
+        <div>
+            <div id="stats2" style="display: flex;align-items: center;justify-content: space-between;padding: 20px;">
+
+                <div class="chart-container">
+                    <h3>Influencer Analysis (Campaigns)</h3>
+                    <select id="influencerCampaignsChartType">
+                        <option value="bar">Bar</option>
+                        <option value="line">Line</option>
+                        <option value="pie">Pie</option>
+                        <option value="doughnut">Doughnut</option>
+                        <option value="polarArea">Polar Area</option>
+                        <option value="radar">Radar</option>
+                        <option value="bubble">Bubble</option>
+                        <option value="scatter">Scatter</option>
+                    </select>
+                    <canvas id="influencerCampaignsChart"></canvas>
+                </div>
+                
+                <div class="chart-container">
+                    <h3>Influencer Analysis (Influencers)</h3>
+                    <select id="influencerChartType">
+                        <option value="bar">Bar</option>
+                        <option value="line">Line</option>
+                        <option value="pie">Pie</option>
+                        <option value="doughnut">Doughnut</option>
+                        <option value="polarArea">Polar Area</option>
+                        <option value="radar">Radar</option>
+                        <option value="bubble">Bubble</option>
+                        <option value="scatter">Scatter</option>
+                    </select>
+                    <canvas id="influencerChart"></canvas>
+                </div>
+                
+            </div>
+            <div id="data">
+                <h2>Active Campaigns :</h2>
+                <hr>
+                {% for i in camp %}
+                <div id="active" class="campaign-row">
+                    <div class="campaign-cell">
+                        <h3>{{ i.title }}</h3>
+                    </div>
+                    <div class="campaign-cell">
+                        <h3>{{ i.start }} - {{ i.end }}</h3>
+                    </div>
+                    <div class="campaign-cell">
+                        <button class="view-btn" data-title="{{ i.title }}" data-description="{{ i.description}}" data-goal="{{ i.goal }}" data-budget="{{ i.budget }}" data-campaign-id="{{ i.campaign_id }}">View</button>
+                    </div>
+                </div>
+                <hr>
+            {% endfor %}
+<style>#active {
+    display: flex;
+    align-items: center; /* Align items vertically centered */
+    justify-content: space-between; /* Distribute space between items */
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd; /* Adds a border around the row */
+    margin-bottom: 10px;
+    background-color: #f9f9f9; /* Optional: light background for clarity */
+    border-radius: 5px; /* Optional: rounded corners */
+}
+
+.campaign-cell {
+    flex: 1; /* Allow cells to grow and take up available space */
+    padding: 0 10px;
+}
+
+.campaign-cell h3 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.campaign-cell:last-child {
+    flex: 0; /* Prevent the button from growing */
+}
+
+.campaign-cell .view-btn {
+    padding: 5px 10px;
+    font-size: 14px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+.campaign-cell .view-btn:hover {
+    background-color: #0056b3;
+}
+
+hr {
+    margin-top: 10px;
+    border: none;
+    border-top: 1px solid #ddd;
+}
+
+</style>            
+
+
+            </div>
+        </div>
+
+    </div>
+    <div id="cropModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="cropModalClose">&times;</span>
+            <h2>Crop and Edit Your Image</h2>
+            <div class="crop-container">
+                <img id="cropImage" src="" alt="Image for Cropping">
+            </div>
+            <div id="adjustment-buttons">
+                <button id="rotateLeftBtn" title="Rotate Left"><i class="fa fa-rotate-left"></i></button>
+                <button id="rotateRightBtn" title="Rotate Right"><i class="fa fa-rotate-right"></i></button>
+                <button id="flipHorizontalBtn" title="Flip Horizontal"><i class="fa fa-arrows-h"></i></button>
+                <button id="flipVerticalBtn" title="Flip Vertical"><i class="fa fa-arrows-v"></i></button>
+                <button id="brightnessBtn" title="Brightness"><i class="fa fa-sun-o"></i></button>
+                <button id="contrastBtn" title="Contrast"><i class="fa fa-adjust"></i></button>
+                <button id="saturationBtn" title="Saturation"><i class="fa fa-tint"></i></button>
+                <button id="grayscaleBtn" title="Grayscale"><i class="fa fa-moon-o"></i></button>
+            </div>
+            <div id="adjustments" style="display: none;">
+                <div id="brightnessSlider" class="slider"></div>
+                <div id="contrastSlider" class="slider"></div>
+                <div id="saturationSlider" class="slider"></div>
+                <div id="grayscaleSlider" class="slider"></div>
+            </div>
+            <div id="cropButtons">
+                <button id="cropBtn">Crop</button>
+                <button id="cancelBtn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="myModal" class="modal1">
+        <div class="modal1-content">
+            <span class="close">&times;</span>
+            <h2 style="text-align: center;">Campaign Details</h2>
+            <h3 id="modal-title"></h3>
+            <p id="modal-description"></p>
+            <h4 id="modal-goal"></h4>
+            <h4 id="modal-budget"></h4>
+            <div id="buttons">
+                <button id="view-campaign-btn">View Campaign</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+    const modal = document.getElementById('myModal');
+    const span = document.getElementsByClassName('close')[0];
+    const viewButtons = document.querySelectorAll('.view-btn');
+
+    viewButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            document.getElementById('modal-title').innerText = this.getAttribute('data-title');
+            document.getElementById('modal-description').innerText = `Description: ${this.getAttribute('data-description')}`;
+            document.getElementById('modal-goal').innerText = `Goal: ${this.getAttribute('data-goal')}`;
+            document.getElementById('modal-budget').innerText = `Payments: ${this.getAttribute('data-budget')}`;
+            document.getElementById('view-campaign-btn').onclick = () => {
+                window.location.href = `{{ url_for('view_campaign', campaign_id='') }}${this.getAttribute('data-campaign-id')}`;
+            };
+            modal.style.display = 'block';
+        });
+    });
+
+    span.onclick = function() {
+        modal.style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    }
+});
+
+        function previewImage(event) {
+            var reader = new FileReader();
+            reader.onload = function() {
+                var output = document.getElementById('output');
+                output.src = reader.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        window.onload = function() {
+            var output = document.getElementById('output');
+            var inputFile = document.querySelector('.file-uploader');
+            var defaultImgSrc = "{{ url_for('static', filename='default.jpg') }}";
+            var profilePicturePath = "{{ spo.profile_picture }}";
+
+            if (!profilePicturePath || profilePicturePath.replace("uploads", '') === 'None' || profilePicturePath.replace("uploads", '') === "") {
+                output.src = defaultImgSrc;
+            } else {
+                output.src = "{{ url_for('uploaded_file', filename='') }}" + profilePicturePath.replace("uploads", '');
+            }
+
+            inputFile.addEventListener('change', function(event) {
+                previewImage(event);
+            });
+
+            const cropModal = document.getElementById('cropModal');
+            const cropModalClose = document.getElementById('cropModalClose');
+            const myModal = document.getElementById('myModal');
+            const modalClose = document.getElementsByClassName("close");
+            const viewButtons = document.querySelectorAll(".view-btn");
+
+            let cropper;
+
+            function openModal(modal) {
+                modal.style.display = 'block';
+            }
+
+            function closeModal(modal) {
+                modal.style.display = 'none';
+            }
+
+            viewButtons.forEach(function(btn) {
+                btn.onclick = function() {
+                    openModal(myModal);
+                }
+            });
+
+            // Close modals on click
+            cropModalClose.onclick = function() {
+                closeModal(cropModal);
+            }
+
+            Array.from(modalClose).forEach(function(closeBtn) {
+                closeBtn.onclick = function() {
+                    closeModal(myModal);
+                }
+            });
+
+            window.onclick = function(event) {
+                if (event.target == myModal || event.target == cropModal) {
+                    closeModal(myModal);
+                    closeModal(cropModal);
+                }
+            }
+
+            // Initialize Cropper
+            const cropImage = document.getElementById('cropImage');
+            const cropBtn = document.getElementById('cropBtn');
+            const cancelBtn = document.getElementById('cancelBtn');
+            const adjustmentButtons = document.getElementById('adjustment-buttons');
+            const adjustments = document.getElementById('adjustments');
+            const brightnessSlider = document.getElementById('brightnessSlider');
+            const contrastSlider = document.getElementById('contrastSlider');
+            const saturationSlider = document.getElementById('saturationSlider');
+            const grayscaleSlider = document.getElementById('grayscaleSlider');
+
+            noUiSlider.create(brightnessSlider, {
+                start: 100,
+                range: {
+                    'min': 0,
+                    'max': 200
+                }
+            });
+
+            noUiSlider.create(contrastSlider, {
+                start: 100,
+                range: {
+                    'min': 0,
+                    'max': 200
+                }
+            });
+
+            noUiSlider.create(saturationSlider, {
+                start: 100,
+                range: {
+                    'min': 0,
+                    'max': 200
+                }
+            });
+
+            noUiSlider.create(grayscaleSlider, {
+                start: 0,
+                range: {
+                    'min': 0,
+                    'max': 100
+                }
+            });
+
+            function applyFilters(ctx, image) {
+                const brightness = brightnessSlider.noUiSlider.get();
+                const contrast = contrastSlider.noUiSlider.get();
+                const saturation = saturationSlider.noUiSlider.get();
+                const grayscale = grayscaleSlider.noUiSlider.get();
+
+                ctx.filter = `brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%) grayscale(${grayscale}%)`;
+                ctx.drawImage(image, 0, 0);
+            }
+
+            inputFile.addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    cropImage.src = e.target.result;
+                    openModal(cropModal);
+
+                    if (cropper) {
+                        cropper.destroy();
+                    }
+
+                    cropper = new Cropper(cropImage, {
+                        aspectRatio: 1,
+                        viewMode: 1,
+                        autoCropArea: 1,
+                        movable: false,
+                        cropBoxResizable: true
+                    });
+                };
+
+                reader.readAsDataURL(file);
+            });
+
+            cropBtn.addEventListener('click', function() {
+                const canvas = cropper.getCroppedCanvas({
+                    width: 250,
+                    height: 250
+                });
+                const ctx = canvas.getContext('2d');
+                applyFilters(ctx, canvas);
+                output.src = canvas.toDataURL('image/png');
+                closeModal(cropModal);
+            });
+
+            cancelBtn.addEventListener('click', function() {
+                closeModal(cropModal);
+            });
+
+            adjustmentButtons.addEventListener('click', function(event) {
+                const target = event.target.closest('button');
+                if (!target) return;
+
+                adjustments.style.display = 'block';
+                const sliders = adjustments.querySelectorAll('.slider');
+                sliders.forEach(slider => slider.style.display = 'none');
+
+                switch (target.id) {
+                    case 'brightnessBtn':
+                        brightnessSlider.style.display = 'block';
+                        break;
+                    case 'contrastBtn':
+                        contrastSlider.style.display = 'block';
+                        break;
+                    case 'saturationBtn':
+                        saturationSlider.style.display = 'block';
+                        break;
+                    case 'grayscaleBtn':
+                        grayscaleSlider.style.display = 'block';
+                        break;
+                }
+            });
+
+            // Rotation and flipping
+            document.getElementById('rotateLeftBtn').addEventListener('click', function() {
+                cropper.rotate(-45);
+                cropper.zoomTo(0); // Reset zoom level
+
+            });
+
+            document.getElementById('rotateRightBtn').addEventListener('click', function() {
+                cropper.rotate(45);
+                cropper.zoomTo(0); // Reset zoom level
+
+            });
+
+            document.getElementById('flipHorizontalBtn').addEventListener('click', function() {
+                cropper.scaleX(cropper.getData().scaleX === 1 ? -1 : 1);
+            });
+
+            document.getElementById('flipVerticalBtn').addEventListener('click', function() {
+                cropper.scaleY(cropper.getData().scaleY === 1 ? -1 : 1);
+            });
+        }
+       
+        async function fetchData(category, sponsorId) {
+    const response = await fetch(`/chart-data/${category}/${sponsorId}`);
+    const data = await response.json();
+    return data;
+}
+
+async function createChart(ctx, category, sponsorId, chartType) {
+    const data = await fetchData(category, sponsorId);
+    return new Chart(ctx, {
+        type: chartType,
+        data: data,
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    const sponsorId = '{{spo.username}}'; 
+
+    // Ads Analysis
+    const adsChartElement = document.getElementById('sponsorChart');
+    if (adsChartElement) {
+        const adsChartCtx = adsChartElement.getContext('2d');
+        let adsChart = await createChart(adsChartCtx, 'ads', sponsorId, 'bar');
+        document.getElementById('sponsorChartType').addEventListener('change', async function() {
+            adsChart.destroy();
+            adsChart = await createChart(adsChartCtx, 'ads', sponsorId, this.value);
+        });
+    }
+
+    // Influencer vs Campaign Analysis
+    const influencerCampaignsChartElement = document.getElementById('influencerCampaignsChart');
+    if (influencerCampaignsChartElement) {
+        const influencerCampaignsChartCtx = influencerCampaignsChartElement.getContext('2d');
+        let influencerCampaignsChart = await createChart(influencerCampaignsChartCtx, 'influencer-campaigns', sponsorId, 'bar');
+        document.getElementById('influencerCampaignsChartType').addEventListener('change', async function() {
+            influencerCampaignsChart.destroy();
+            influencerCampaignsChart = await createChart(influencerCampaignsChartCtx, 'influencer-campaigns', sponsorId, this.value);
+        });
+    }
+
+    // Influencer vs Influencer Analysis
+    const influencerChartElement = document.getElementById('influencerChart');
+    if (influencerChartElement) {
+        const influencerChartCtx = influencerChartElement.getContext('2d');
+        let influencerChart = await createChart(influencerChartCtx, 'influencer', sponsorId, 'bar');
+        document.getElementById('influencerChartType').addEventListener('change', async function() {
+            influencerChart.destroy();
+            influencerChart = await createChart(influencerChartCtx, 'influencer', sponsorId, this.value);
+        });
+    }
+});
+
+    </script>
+</body>
+
+</html>

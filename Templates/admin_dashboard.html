@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
+    <style>
+        #category img {
+            width: 70px;
+            height: 70px;
+            border: 2px solid grey;
+            border-radius: 50%;
+        }
+        #category {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            
+            margin: 40px;
+        }
+        #list {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            text-align: center;
+            
+        }
+        .analysis {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            
+        }
+        .chart-container {
+            width: 45%;
+            margin-bottom: 20px;
+
+           
+        }
+        .chart-container select{
+            padding: 10px;
+            font-weight: bold;
+            border: 1px solid paleturquoise;
+
+        }
+        .chart-container canvas {
+            display: block;
+        }
+        #3d-container {
+            width: 100%;
+            height: 500px;
+            margin-top: 20px;
+            display: none;
+        }
+        #results {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 30px;
+            background-color: aliceblue;
+            border: 1px solid rgb(42, 211, 161);
+            border-radius: 10px;
+            padding: 20px;
+            
+
+        }
+      .campaign-box {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .campaign-box img {
+            width: 100%;
+            height: 150px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .campaign-box h4 {
+            margin: 15px 0 10px;
+            font-size: 18px;
+        }
+
+        .campaign-box p {
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .campaign-box button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .campaign-box button .material-symbols-outlined {
+            margin-right: 5px;
+        }
+
+        .campaign-box button:hover {
+            background-color: #218838;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+    <div class="header">
+        <div id="logo">
+            <img src="{{url_for('static',filename='logo.jpeg')}}" alt="IEAS Logo">
+        </div>
+        <h2>Admin's Dashboard</h2>
+        <div id="links">
+            <a href="{{url_for('admin_list')}}">Info</a>
+            <a href="{{ url_for('admin_search_all') }}">Find</a>
+            <a href="{{url_for('admin_payment')}}">Payments</a>
+            <a href="{{ url_for('login') }}">Stats</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </div>
+    <div class="box">
+        <div id="stoms">
+            <video autoplay muted loop class="background-video">
+                <source src="https://videos.pexels.com/video-files/3141210/3141210-uhd_2560_1440_25fps.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <h1>Welcome Admin !!</h1>
+            <h2>Explore Your Data with us....</h2>
+        </div>
+        
+        <div id="category" onclick="window.location.href='{{url_for('admin_list')}}'" style="cursor: pointer;">
+            <div id="list">
+                <img src="https://img.freepik.com/free-vector/business-deal-concept-illustration_114360-1535.jpg?w=740&t=st=1723367422~exp=1723368022~hmac=fbb38991ad10affeea5cf6d01d2f96db8a76fd11f5205299292ffe8c5270bb80" alt="sponsor">
+                <h4>Sponsor</h4>
+            </div>
+            <div id="list" >
+                <img src="https://img.freepik.com/premium-photo/social-media-post-blogging-influencer-blogger-girl-character-like-share-comment-promo-selfie-creative-idea-smm-social-profile-insta-frame-young-star_1240525-8948.jpg?w=740" alt="Influencer">
+                <h4>Influencer</h4>
+            </div>
+            <div id="list">
+                <img src="https://img.freepik.com/free-vector/organic-flat-design-public-relations-concept_23-2148909838.jpg?t=st=1723367580~exp=1723371180~hmac=4e09d4afa9a90cbec87d8e935996c4735e20eea30a4a95fcb9d52e5e11a59696&w=740" alt="campaigns">
+                <h4>Campaigns (ongoing)</h4>
+            </div>
+            <div id="list">
+                <img src="https://img.freepik.com/premium-vector/red-grunge-expired-rubber-stamp-expiration-date-vintage-square-label-vector-illustration-isolate_664969-294.jpg?w=996" alt="campaigns">
+                <h4>Campaigns (expired)</h4>
+            </div>
+            <div id="list">
+                <img src="https://img.freepik.com/free-vector/newsletter-illustration-concept_114360-777.jpg?t=st=1723367860~exp=1723371460~hmac=7d85c8cd89c038ef844799797439baa671e90b0c0cb5eb9d2ebc22b52cabc1db&w=1060" alt="ads">
+                <h4>Adds (Request)</h4>
+            </div>
+            <div id="list">
+                <img src="https://img.freepik.com/free-photo/3d-render-hand-holding-wallet-with-bank-card_107791-15843.jpg?w=740&t=st=1723368002~exp=1723368602~hmac=b0c8b448e8eb0e9da506b0c9d8f36fb81a43407479719d95554f29c423a6cf9e" alt="ads">
+                <h4>Payment</h4>
+            </div>
+            <div id="list">
+                <img src="https://img.freepik.com/premium-photo/3d-blocked-user-icon-block-profile-icon-stop-group-prohibition-sign-no-entry-sign-icon-trendy-modern-vector-3d-style_839035-1809632.jpg?w=740" alt="flag">
+                <h4>Flagged Users</h4>
+            </div>
+        </div>
+
+        <h2>Traffic:</h2>
+        <hr>
+
+            <div class="analysis">
+                <!-- Sponsor Analysis -->
+                <div class="chart-container">
+                    <h3>Sponsor Analysis: Individual vs Company</h3>
+                    <select id="sponsorChartType">
+                        <option value="bar">Bar</option>
+                        <option value="line">Line</option>
+                        <option value="pie">Pie</option>
+                        <option value="doughnut">Doughnut</option>
+                        <option value="polarArea">Polar Area</option>
+                    </select>
+                    <canvas id="sponsorChart"></canvas>
+                </div>
+            
+                <!-- User Analysis -->
+                <div class="chart-container">
+                    <h3>User Analysis: Sponsor vs Influencer</h3>
+                    <select id="userChartType">
+                        <option value="bar">Bar</option>
+                        <option value="line">Line</option>
+                        <option value="pie">Pie</option>
+                        <option value="doughnut">Doughnut</option>
+                        <option value="polarArea">Polar Area</option>
+                    </select>
+                    <canvas id="userChart"></canvas>
+                </div>
+            
+                <!-- Ads Analysis -->
+                <div class="chart-container">
+                    <h3>Ads Analysis: Pending vs Accepted vs Rejected vs Negotiated</h3>
+                    <select id="adsChartType">
+                        <option value="bar">Bar</option>
+                        <option value="line">Line</option>
+                        <option value="pie">Pie</option>
+                        <option value="doughnut">Doughnut</option>
+                        <option value="polarArea">Polar Area</option>
+                    </select>
+                    <canvas id="adsChart"></canvas>
+                </div>
+            
+                <!-- Campaign Analysis -->
+                <div class="chart-container">
+                    <h3>Campaign Analysis: User vs Campaigns</h3>
+                    <select id="campaignsChartType">
+                        <option value="bar">Bar</option>
+                        <option value="line">Line</option>
+                        <option value="pie">Pie</option>
+                        <option value="doughnut">Doughnut</option>
+                        <option value="polarArea">Polar Area</option>
+                    </select>
+                    <canvas id="campaignsChart"></canvas>
+                </div>
+            </div>
+      
+
+        <h2 style="margin: 25px;font-weight: bold;">Campaigns :</h2><hr>
+        <div id="results">
+            {% for campaign in camp %}
+                {% set image = campaign.image.split(',')[0] %}
+                <div class="campaign-box">
+                    <img src="{{ url_for('uploaded_file', filename=image) }}" alt="Campaign Image">
+                    <h4>{{ campaign.title }}</h4>
+                    <p>Budget: {{ campaign.budget }}</p>
+                    <button onclick="window.location.href='{{ url_for('camp_view', campaign_id=campaign.campaign_id) }}'">
+                        <span class="material-symbols-outlined">View</span>Campaign
+                    </button>
+                </div>
+            {% endfor %}
+        </div>
+        
+    </div>
+
+    <script>
+        async function fetchData(category) {
+            const response = await fetch(`/chart-data/${category}/admin`);
+            const data = await response.json();
+            return data;
+        }
+    
+        async function createChart(ctx, category, chartType) {
+            const data = await fetchData(category);
+            return new Chart(ctx, {
+                type: chartType,
+                data: data,
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+    
+        document.addEventListener('DOMContentLoaded', async () => {
+            const sponsorChartCtx = document.getElementById('sponsorChart').getContext('2d');
+            let sponsorChart = await createChart(sponsorChartCtx, 'sponsor', document.getElementById('sponsorChartType').value);
+            document.getElementById('sponsorChartType').addEventListener('change', async function() {
+                sponsorChart.destroy();
+                sponsorChart = await createChart(sponsorChartCtx, 'sponsor', this.value);
+            });
+    
+            const userChartCtx = document.getElementById('userChart').getContext('2d');
+            let userChart = await createChart(userChartCtx, 'user', document.getElementById('userChartType').value);
+            document.getElementById('userChartType').addEventListener('change', async function() {
+                userChart.destroy();
+                userChart = await createChart(userChartCtx, 'user', this.value);
+            });
+    
+            const adsChartCtx = document.getElementById('adsChart').getContext('2d');
+            let adsChart = await createChart(adsChartCtx, 'ads', document.getElementById('adsChartType').value);
+            document.getElementById('adsChartType').addEventListener('change', async function() {
+                adsChart.destroy();
+                adsChart = await createChart(adsChartCtx, 'ads', this.value);
+            });
+    
+            const campaignsChartCtx = document.getElementById('campaignsChart').getContext('2d');
+            let campaignsChart = await createChart(campaignsChartCtx, 'campaigns', document.getElementById('campaignsChartType').value);
+            document.getElementById('campaignsChartType').addEventListener('change', async function() {
+                campaignsChart.destroy();
+                campaignsChart = await createChart(campaignsChartCtx, 'campaigns', this.value);
+            });
+        });
+    </script>
+</body>
+</html>

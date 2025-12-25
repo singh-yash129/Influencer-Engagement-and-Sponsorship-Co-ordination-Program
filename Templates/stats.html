@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stats</title>
+    <link rel="stylesheet" href="/Static/stats.css">
+</head>
+<body>
+    <div class="header">
+        <div id="logo">
+            <img src="{{url_for('static',filename='logo.jpeg')}}" alt="IEAS Logo">
+        </div>
+        <h2>Admin's Dashboard</h2>
+        <div id="links">
+            <a href="{{ url_for('Info') }}">Info</a>
+            <a href="{{ url_for('privacy') }}">Find</a>
+            <a href="{{ url_for('about') }}">Stats</a>
+            <a href="{{ url_for('help') }}">Logout</a>
+        </div>
+    </div>
+    
+     <div class="onlive">
+        <div id="overall">
+            <div id="bars">
+                <img src="{{url_for('static',filename='logo.jpeg')}}" alt="">
+            </div>
+            <div id="pie">
+                <img src="{{url_for('static',filename='logo.jpeg')}}" alt="">
+            </div>
+        </div>
+     </div>
+</body>
+</html>

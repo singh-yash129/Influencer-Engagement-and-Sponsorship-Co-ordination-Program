@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='find.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='inf.css')}}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.5.0/nouislider.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.5.0/nouislider.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <style>
+        /* General Styles */
+.post-header {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.post-header h3 {
+    margin-top: 0;
+    font-size: 24px;
+    color: #333;
+}
+
+.post-header p {
+    font-size: 16px;
+    color: #555;
+}
+
+/* Image and Video Styles */
+.post-header img, .post-header video {
+    max-width: 100%;
+    margin-top: 10px;
+    border-radius: 10px;
+}
+
+/* Post Actions */
+.post-actions {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    background-color: #fff;
+    border-top: 1px solid #e0e0e0;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.post-actions .material-symbols-outlined {
+    cursor: pointer;
+    font-size: 24px;
+    color: #888;
+}
+
+.post-actions .material-symbols-outlined:hover {
+    color: #007bff;
+}
+
+/* Comments Section */
+.comments-section {
+    padding: 10px;
+    background-color: #f1f1f1;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+.comments-section input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    margin-bottom: 10px;
+}
+
+.comments-section .comment-avatar {
+    width: 40px;
+    height: 40px;
+    background-color: #bbb;
+    border-radius: 50%;
+    float: left;
+    margin-right: 10px;
+}
+
+.comments-section .comment-content {
+    overflow: hidden;
+}
+
+.comments-section .comment-content strong {
+    display: block;
+    font-size: 14px;
+    color: #333;
+}
+
+.comments-section .comment-content p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #555;
+}
+
+.comments-section .comment-timestamp {
+    font-size: 12px;
+    color: #999;
+}
+
+/* Event Specific Styles */
+.post-header.events h3 {
+    font-size: 26px;
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.post-header.events p {
+    font-size: 18px;
+    color: #34495e;
+}
+
+.post-header.events strong {
+    font-weight: 600;
+    color: #2980b9;
+}
+
+/* Announce Specific Styles */
+.post-header.announces h3 {
+    font-size: 26px;
+    color: #8e44ad;
+    margin-bottom: 10px;
+}
+
+.post-header.announces p {
+    font-size: 18px;
+    color: #9b59b6;
+}
+
+    </style>
+</head>
+<script>    function myFunction() {
+    var element = document.body;
+    var x = document.getElementById("myDIV");
+    element.classList.toggle("darkmode");
+    if (element.classList.contains("darkmode")) {
+        x.innerHTML = "light_mode";
+    } else {
+        x.innerHTML = "dark_mode";
+    }
+}</script>
+<body>
+    <div class="header">
+        <div id="logo">
+            <img src="{{ url_for('static', filename='logo.jpeg') }}" alt="IEAS Logo">
+        </div>
+        <h2>Influencer</h2>
+        <div id="links">
+          <a href="{{url_for('influencer_dashboard',user_1=current_user.username)}}">Social</a>
+            <a href="{{ url_for('inf_search') }}">Campaigns</a>
+            <a href="{{ url_for('find') }}">Find</a>
+            <a href="{{ url_for('home') }}">Stats</a>
+            <a href="{{ url_for('logout') }}">Logout</a>  
+        </div>
+    </div>
+    <div class="main2" style="display: flex;align-items: center;margin: 25px;justify-content: space-around;">
+        <div class="section2" style="margin: auto;">
+            <form action="{{ url_for('profile', user=current_user.username) }}" method="post" enctype="multipart/form-data">
+                <div class="profile-picture" style="border-radius: 50%;">
+                    <input class="file-uploader" type="file" name="profile_picture" accept="image/*" onchange="previewImage(event)" disabled>
+                    <img id="output" alt="Profile Picture Preview">
+                </div><br>
+  
+            </form>
+        </div>
+ <div style="display: flex;flex-direction: column;justify-content: space-between;margin-top: 100px;">
+        <div style="display: flex;align-items: center;justify-content: space-between;margin-top: -2cm;gap: 3cm;">
+            <div id="icons">
+
+                <span class="material-symbols-outlined">
+                    mail
+                </span>
+                <span class="material-symbols-outlined" id="myDIV" onclick="myFunction()">
+                    dark_mode
+                </span>
+            </div>
+
+        </div>
+        <div id="details">
+            <form action="{{ url_for('edit_data', user1=user.username) }}" method="post">
+
+            <div class="row">
+                <div id="input">
+                    <label for="first_name">First-Name :</label>
+                    <input type="text" name="first_name" id="first_name" value="{{user.first_name}}" disabled>
+                </div>
+                <div id="input">
+                    <label for="last_name">Last-Name :</label>
+                    <input type="text" name="last_name" id="last_name" value="{{user.last_name}}" disabled>
+                </div>
+            </div>
+            <div class="row">
+                <div id="input">
+                    <label for="dob">Date of Birth :</label>
+                    <input type="text" name="dob" id="dob" value="{{user.dob}}" disabled>
+                </div>
+                <div id="input">
+                    <label for="gender">Gender :</label>
+                    <input type="text" name="gender" id="gender" value="{{user.gender}}" disabled>
+                </div>
+            </div>
+            <div class="row">
+                <div id="input">
+                    <label for="username">Username :</label>
+                    <input type="text" name="username" id="username" value="{{user.username}}" disabled readonly>
+                </div>
+                <div id="input">
+                    <label for="email">Email :</label>
+                    <input type="email" name="email" id="email"  value="{{user.email_id}}" disabled readonly>
+                </div>
+                <div id="input">
+                    <label for="industry">Industry :</label>
+                    <input type="text" name="industry" id="industry" value="{{user.industry}}" disabled>
+                </div>
+            </div>
+  
+            </form>
+        </div>
+        
+</div>   
+ </div>
+    <div id="niche">
+        <form action="{{ url_for('edit_niche', user1=user.username) }}" method="post" >
+
+        <label for="niche">Niche :</label>
+        <input type="url" name="niche" id="niche" value="{{user.niche}}" disabled>
+  
+        </form>
+        
+    </div>
+    <div id="section3">
+        <div id="friends">
+            <div class="section-title">Friends</div>
+            <div class="img-container">
+                {%for i in friends%}
+                    <img src="{{url_for('uploaded_file',filename=i.User.profile_picture.replace('uploads\\',''))}}" alt="Friend 1">
+                {%endfor%}
+            </div>
+            <span>show more</span>
+        </div>
+        <div id="followers">
+            <div class="section-title">Followers</div>
+            <div class="img-container">
+                {%for j in follower%}
+                    <img src="{{url_for('uploaded_file',filename=j.User.profile_picture.replace('uploads\\',''))}}" alt="follow 1">
+                {%endfor%}
+            </div>
+            <span>show more</span>
+        </div>
+    </div>
+    <div id="bio">
+        <form action="{{ url_for('edit_bio', user1=user.username) }}" method="post">
+
+        <label for="bio">Bio and Info :</label>
+        <textarea name="bio" id="bio" placeholder="Enter about yourself .." disabled>{{user.bio}}</textarea>
+ 
+        </form>
+    </div>
+    {% for item in combined %}
+    <div id="content-{{ item.__tablename__ }}-{{ item.get_id() }}">
+        <!-- Post header -->
+        <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+            <!-- User info -->
+            <div style="display: flex; align-items: center;">
+                {% if user.profile_picture %}
+                    <img src="{{ url_for('uploaded_file', filename=user.profile_picture.replace('uploads\\', '')) }}" alt="Profile Picture" width="50px" height="50px" style="border-radius: 50%;">
+                {% else %}
+                    <img src="{{ url_for('static', filename='default.jpg') }}" alt="Profile Picture" width="50px" height="50px" style="border-radius: 50%;">
+                {% endif %}
+                <div style="margin-left: 10px;">
+                    <h5 style="font-size: 20px; margin: 0;">{{ user.username }}</h5>
+                    <h5 style="font-size: 12px; color: #007BFF; margin: 0;">{{ item.created_at }}</h5>
+                </div>
+            </div>
+            <!-- Dropdown menu -->
+            <span class="material-symbols-outlined menu-icon" onclick="myMenu('{{ item.__tablename__ }}', '{{ item.get_id() }}')" style="cursor: pointer;">
+                more_vert
+            </span>
+            <div class="dropdown-menu" id="dropdown-{{ item.__tablename__ }}-{{ item.get_id() }}" style="top: 52px; right: 31px; display: none;">
+                <div id="dropdowns">
+                    <span class="material-symbols-outlined">delete</span>
+                    <h4>Delete {{ item.__tablename__ }}</h4>
+                </div>
+                <div id="dropdowns">
+                    <span class="material-symbols-outlined">person_remove</span>
+                    <h4>Un-friend</h4>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Post content -->
+        <div class="post-header">
+            {% if item.__tablename__ == "posts" %}
+                <p>{{ item.content }}</p>
+                {% if item.media_type == 'image' %}
+                    <img src="{{ url_for('uploaded_file', filename=item.media_url.replace('uploads\\', '')) }}" alt="Post Image">
+                {% elif item.media_type == 'video' %}
+                    <video src="{{ url_for('uploaded_file', filename=item.media_url.replace('uploads\\', '')) }}" controls></video>
+                {% endif %}
+            {% elif item.__tablename__ == "events" %}
+                <h1>Event</h1>
+                <h3>{{ item.title }}</h3>
+                <p>{{ item.description }}</p>
+                <p><strong>Date:</strong> {{ item.date }}</p>
+                <p><strong>Time:</strong> {{ item.start_time }} - {{ item.end_time }}</p>
+                {% if item.media %}
+                    <img src="{{ url_for('uploaded_file', filename=item.media.replace('uploads\\', '')) }}" alt="Event Media">
+                {% endif %}
+            {% elif item.__tablename__ == "announces" %}
+                <h1>Announcement</h1>
+                <h3>{{ item.title }}</h3>
+                <p>{{ item.content }}</p>
+            {% endif %}
+        </div>
+    
+        <!-- Post actions -->
+        <div class="post-actions">
+            <span class="material-symbols-outlined" id="like-{{ item.__tablename__ }}-{{ item.get_id() }}" onclick="likeContent('{{ item.__tablename__ }}', '{{ item.get_id() }}')">thumb_up</span>
+            <span class="material-symbols-outlined" onclick="toggleComments('{{ item.__tablename__ }}', '{{ item.get_id() }}')">comment</span>
+            <span class="material-symbols-outlined">share</span>
+        </div>
+    
+        <!-- Comments section -->
+        <div id="comments-{{ item.__tablename__ }}-{{ item.get_id() }}" class="comments-section" style="display: none;">
+            <input type="text" id="comment-input-{{ item.__tablename__ }}-{{ item.get_id() }}" placeholder="Write a comment..." onkeypress="submitComment(event, '{{ item.__tablename__ }}', '{{ item.get_id() }}')">
+            <div id="comments-list-{{ item.__tablename__ }}-{{ item.get_id() }}">
+                <!-- Example comment -->
+                <div>
+                    <div class="comment-avatar"></div>
+                    <div class="comment-content">
+                        <strong>Username</strong>
+                        <p>This is a sample comment.</p>
+                        <span class="comment-timestamp">Just now</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+{% endfor %}
+
+<script>
+function likeContent(contentType, contentId) {
+    const likeIcon = document.getElementById(`like-${contentType}-${contentId}`);
+    fetch(`/like/${contentType}/${contentId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `user_id={{ current_user.username }}`
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok.');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.status === 'liked') {
+            likeIcon.style.color = 'red';
+        } else {
+            likeIcon.style.color = 'black';
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+function toggleComments(contentType, contentId) {
+    const commentSection = document.getElementById(`comments-${contentType}-${contentId}`);
+    commentSection.style.display = commentSection.style.display === 'none' ? 'block' : 'none';
+    
+    if (commentSection.style.display === 'block') {
+        fetch(`/comments/${contentType}/${contentId}`)
+        .then(response => response.json())
+        .then(comments => {
+            const commentsList = document.getElementById(`comments-list-${contentType}-${contentId}`);
+            commentsList.innerHTML = '';
+            comments.forEach(comment => {
+                const commentElement = document.createElement('div');
+                commentElement.innerHTML = `<strong>${comment.user_id}</strong>: ${comment.content}`;
+                commentsList.appendChild(commentElement);
+            });
+        })
+        .catch(error => console.error('Error:', error));
+    }
+}
+
+    
+function submitComment(event, contentType, contentId) {
+    if (event.key === 'Enter') {
+        const commentInput = document.getElementById(`comment-input-${contentType}-${contentId}`);
+        const content = commentInput.value;
+        
+        fetch(`/comment/${contentType}/${contentId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `user_id={{ current_user.username }}&content=${encodeURIComponent(content)}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            const commentsList = document.getElementById(`comments-list-${contentType}-${contentId}`);
+            const commentElement = document.createElement('div');
+            commentElement.innerHTML = `<strong>{{ current_user.username }}</strong>: ${data.content}`;
+            commentsList.appendChild(commentElement);
+            commentInput.value = '';
+        })
+        .catch(error => console.error('Error:', error));
+    }
+}
+
+</script>
+
+    
+    <div id="cropModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="cropModalClose"></span>
+            <h2>Crop and Edit Your Image</h2>
+            <div class="crop-container">
+                <img id="cropImage" src="" alt="Image for Cropping">
+            </div>
+            <div id="adjustment-buttons">
+                <button id="rotateLeftBtn" title="Rotate Left"><i class="fa fa-rotate-left"></i></button>
+                <button id="rotateRightBtn" title="Rotate Right"><i class="fa fa-rotate-right"></i></button>
+                <button id="flipHorizontalBtn" title="Flip Horizontal"><i class="fa fa-arrows-h"></i></button>
+                <button id="flipVerticalBtn" title="Flip Vertical"><i class="fa fa-arrows-v"></i></button>
+                <button id="brightnessBtn" title="Brightness"><i class="fa fa-sun-o"></i></button>
+                <button id="contrastBtn" title="Contrast"><i class="fa fa-adjust"></i></button>
+                <button id="saturationBtn" title="Saturation"><i class="fa fa-tint"></i></button>
+                <button id="grayscaleBtn" title="Grayscale"><i class="fa fa-moon-o"></i></button>
+            </div>
+            <div id="adjustments" style="display: none;">
+                <div id="brightnessSlider" class="slider"></div>
+                <div id="contrastSlider" class="slider"></div>
+                <div id="saturationSlider" class="slider"></div>
+                <div id="grayscaleSlider" class="slider"></div>
+            </div>
+            <div id="cropButtons">
+                <button id="cropBtn">Crop</button>
+                <button id="cancelBtn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const editDetailsIcon = document.getElementById('edit-details');
+    const bt = document.getElementById('bt');
+    const detailInputs = document.querySelectorAll('#details input');
+
+    editDetailsIcon.addEventListener('click', function() {
+        detailInputs.forEach(input => {
+            input.disabled = false;
+            bt.style.display='block';
+        });
+        detailInputs[0].focus();  // Focus on the first input field
+    });
+});
+
+</script>
+<script>    document.addEventListener('DOMContentLoaded', function() {
+    const editDetailsIcon = document.getElementById('edit-niche');
+    const bst = document.getElementById('bst');
+    const detailInputs = document.querySelectorAll('#niche input');
+
+    editDetailsIcon.addEventListener('click', function() {
+        detailInputs.forEach(input => {
+            input.disabled = false;
+            bst.style.display='block';
+        });
+        detailInputs[0].focus();  // Focus on the first input field
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const editDetailsIcon = document.getElementById('edit-bio');
+    const bts = document.getElementById('bts');
+    const detailInputs = document.querySelectorAll('#bio textarea');
+
+    editDetailsIcon.addEventListener('click', function() {
+        detailInputs.forEach(input => {
+            input.disabled = false;
+            bts.style.display='block';
+        });
+        detailInputs[0].focus();  // Focus on the first input field
+    });
+});
+</script>
+
+<script>
+            function previewImage(event) {
+            var reader = new FileReader();
+            reader.onload = function() {
+                var output = document.getElementById('output');
+                output.src = reader.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        window.onload = function() {
+            var output = document.getElementById('output');
+            var inputFile = document.querySelector('.file-uploader');
+            var defaultImgSrc = "{{ url_for('static', filename='default.jpg') }}";
+            var profilePicturePath = "{{ user.profile_picture }}";
+
+            if (!profilePicturePath || profilePicturePath.replace("uploads", '') === 'None' || profilePicturePath.replace("uploads", '') === "") {
+                output.src = defaultImgSrc;
+            } else {
+                output.src = "{{ url_for('uploaded_file', filename='') }}" + profilePicturePath.replace("uploads", '');
+            }
+
+            inputFile.addEventListener('change', function(event) {
+                previewImage(event);
+            });
+
+            const cropModal = document.getElementById('cropModal');
+            const cropModalClose = document.getElementById('cropModalClose');
+            const myModal = document.getElementById('myModal');
+            const modalClose = document.getElementsByClassName("close");
+            const viewButtons = document.querySelectorAll(".view-btn");
+
+            let cropper;
+
+            function openModal(modal) {
+                modal.style.display = 'block';
+            }
+
+            function closeModal(modal) {
+                modal.style.display = 'none';
+            }
+
+            viewButtons.forEach(function(btn) {
+                btn.onclick = function() {
+                    openModal(myModal);
+                }
+            });
+
+            // Close modals on click
+            cropModalClose.onclick = function() {
+                closeModal(cropModal);
+            }
+
+            Array.from(modalClose).forEach(function(closeBtn) {
+                closeBtn.onclick = function() {
+                    closeModal(myModal);
+                }
+            });
+
+            window.onclick = function(event) {
+                if (event.target == myModal || event.target == cropModal) {
+                    closeModal(myModal);
+                    closeModal(cropModal);
+                }
+            }
+
+            // Initialize Cropper
+            const cropImage = document.getElementById('cropImage');
+            const cropBtn = document.getElementById('cropBtn');
+            const cancelBtn = document.getElementById('cancelBtn');
+            const adjustmentButtons = document.getElementById('adjustment-buttons');
+            const adjustments = document.getElementById('adjustments');
+            const brightnessSlider = document.getElementById('brightnessSlider');
+            const contrastSlider = document.getElementById('contrastSlider');
+            const saturationSlider = document.getElementById('saturationSlider');
+            const grayscaleSlider = document.getElementById('grayscaleSlider');
+
+            noUiSlider.create(brightnessSlider, {
+                start: 100,
+                range: {
+                    'min': 0,
+                    'max': 200
+                }
+            });
+
+            noUiSlider.create(contrastSlider, {
+                start: 100,
+                range: {
+                    'min': 0,
+                    'max': 200
+                }
+            });
+
+            noUiSlider.create(saturationSlider, {
+                start: 100,
+                range: {
+                    'min': 0,
+                    'max': 200
+                }
+            });
+
+            noUiSlider.create(grayscaleSlider, {
+                start: 0,
+                range: {
+                    'min': 0,
+                    'max': 100
+                }
+            });
+
+            function applyFilters(ctx, image) {
+                const brightness = brightnessSlider.noUiSlider.get();
+                const contrast = contrastSlider.noUiSlider.get();
+                const saturation = saturationSlider.noUiSlider.get();
+                const grayscale = grayscaleSlider.noUiSlider.get();
+
+                ctx.filter = `brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%) grayscale(${grayscale}%)`;
+                ctx.drawImage(image, 0, 0);
+            }
+
+            inputFile.addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    cropImage.src = e.target.result;
+                    openModal(cropModal);
+
+                    if (cropper) {
+                        cropper.destroy();
+                    }
+
+                    cropper = new Cropper(cropImage, {
+                        aspectRatio: 1,
+                        viewMode: 1,
+                        autoCropArea: 1,
+                        movable: false,
+                        cropBoxResizable: true
+                    });
+                };
+
+                reader.readAsDataURL(file);
+            });
+
+            cropBtn.addEventListener('click', function() {
+                const canvas = cropper.getCroppedCanvas({
+                    width: 250,
+                    height: 250
+                });
+                const ctx = canvas.getContext('2d');
+                applyFilters(ctx, canvas);
+                output.src = canvas.toDataURL('image/png');
+                closeModal(cropModal);
+            });
+
+            cancelBtn.addEventListener('click', function() {
+                closeModal(cropModal);
+            });
+
+            adjustmentButtons.addEventListener('click', function(event) {
+                const target = event.target.closest('button');
+                if (!target) return;
+
+                adjustments.style.display = 'block';
+                const sliders = adjustments.querySelectorAll('.slider');
+                sliders.forEach(slider => slider.style.display = 'none');
+
+                switch (target.id) {
+                    case 'brightnessBtn':
+                        brightnessSlider.style.display = 'block';
+                        break;
+                    case 'contrastBtn':
+                        contrastSlider.style.display = 'block';
+                        break;
+                    case 'saturationBtn':
+                        saturationSlider.style.display = 'block';
+                        break;
+                    case 'grayscaleBtn':
+                        grayscaleSlider.style.display = 'block';
+                        break;
+                }
+            });
+
+            // Rotation and flipping
+            document.getElementById('rotateLeftBtn').addEventListener('click', function() {
+                cropper.rotate(-45);
+                cropper.zoomTo(0); // Reset zoom level
+
+            });
+
+            document.getElementById('rotateRightBtn').addEventListener('click', function() {
+                cropper.rotate(45);
+                cropper.zoomTo(0); // Reset zoom level
+
+            });
+
+            document.getElementById('flipHorizontalBtn').addEventListener('click', function() {
+                cropper.scaleX(cropper.getData().scaleX === 1 ? -1 : 1);
+            });
+
+            document.getElementById('flipVerticalBtn').addEventListener('click', function() {
+                cropper.scaleY(cropper.getData().scaleY === 1 ? -1 : 1);
+            });
+        }   
+</script>
+</body>
+</html>

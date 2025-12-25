@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Owner</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='find.css') }}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <style>
+        
+        /* General Styles */
+        body {
+            background: #f4f7fc;
+            color: #333;
+            margin: 10px;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        .tab-container {
+            margin: 30px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f1f1f1;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            cursor: pointer;
+            background: #f1f1f1;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .tab:hover,
+        .tab.active {
+            background: #6a11cb;
+            color: #fff;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 30px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .content-table {
+            display: table;
+            width: 100%;
+            border-spacing: 0;
+            margin-bottom: 20px;
+        }
+
+        .content-table-header {
+            display: table-header-group;
+            background: #f9f9f9;
+            font-weight: bold;
+            padding: 10px 0;
+        }
+
+        .content-table-row {
+            display: table-row;
+        }
+
+        .content-table-cell {
+            display: table-cell;
+            padding: 10px;
+            vertical-align: middle;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .content-table-cell img {
+            height: 60px;
+            width: 60px;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .header-content img {
+            height: 30px;
+            width: 30px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .header-content h4, .header-content h3 {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        #buttons button {
+            padding: 10px 20px;
+            margin: 5px;
+            background: #6a11cb;
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .print-export-buttons button{
+            padding: 10px 20px;
+            margin: 5px;
+            background: #6a11cb;
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+
+        }
+        #buttons button:hover {
+            background: #2575fc;
+        }
+        .print-export-buttons button:hover{
+            background: #2575fc;
+
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .print-export-buttons {
+            margin-bottom: 10px;
+        }
+        .print-export-buttons button{
+            border: none; /* Remove borders */
+            color: white; /* White text */
+            text-align: center; /* Center the text */
+            text-decoration: none; /* Remove underline */
+            display: inline-block; /* Get the elements to line up */
+            margin: 4px 2px; /* Add some margin */
+            cursor: pointer; /* Add a pointer cursor on hover */
+            border-radius: 8px; /* Rounded corners */
+        }
+        
+        .material-symbols-outlined {
+            vertical-align: middle; /* Align icon with text */
+            margin-right: 8px; /* Space between icon and text */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div id="logo">
+            <img src="{{ url_for('static', filename='logo.jpeg') }}" alt="IEAS Logo">
+        </div>
+        <div id="links">
+            <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('admin_search_all') }}">Find</a>
+            <a href="{{url_for('admin_payment')}}">Payments</a>
+            <a href="{{ url_for('about') }}">Stats</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </div>
+    <div class="tab-container">
+        <div class="tabs">
+            <div class="tab" onclick="showTab('sponsor')">Sponsors List</div>
+            <div class="tab" onclick="showTab('influencer')">Influencers List</div>
+            <div class="tab" onclick="showTab('campso')">Campaign Ongoing</div>
+            <div class="tab" onclick="showTab('campse')">Campaign Expired</div>
+            <div class="tab" onclick="showTab('ads')">Ads Request</div>
+            <div class="tab" onclick="showTab('flagged')">Flagged Users</div>
+            <div class="tab" onclick="showTab('view')">Mark as View</div>
+            <div class="tab" onclick="showTab('deactivate')">Deactivate</div>
+        </div>
+        <div class="tab-content" id="deactivate">
+            <h2>Deactivation List:</h2>
+            <div class="print-export-buttons" style="float: right;">
+                <button onclick="printTab('sponsor')"><span class="material-symbols-outlined">
+                    print
+                    </span>Print</button>
+                <button onclick="exportToCSV('sponsor')"><span class="material-symbols-outlined">
+                    csv
+                    </span>Export as CSV</button>
+            </div>
+            <div class="content-table">
+                <div class="content-table-header">
+                    <div class="content-table-cell">Profile</div>
+                    <div class="content-table-cell">Username</div>
+                    <div class="content-table-cell">Category</div>
+                    <div class="content-table-cell">Industry</div>
+                    <div class="content-table-cell">Email</div>
+                    <div class="content-table-cell">Role</div>
+                    <div class="content-table-cell">Actions</div>
+                </div>
+                {% for user in user %}
+                {% if user.admin_data == 'deactivate' %}
+                <div class="content-table-row">
+                    <div class="content-table-cell">
+                        {% if user.profile_picture %}
+                        <img src="{{ url_for('uploaded_file', filename=user.profile_picture.replace('upload\\', '')) }}" alt="Profile Picture">
+                        {% else %}
+                        <img src="{{url_for('static', filename='default.jpg')}}" alt="">
+                        {% endif %}
+                    </div>
+                    <div class="content-table-cell">{{ user.username }}</div>
+                    <div class="content-table-cell">{{user.category}}</div>
+                    <div class="content-table-cell">{{user.industry}}</div>
+                    <div class="content-table-cell">{{ user.email_id }}</div>
+                    <div class="content-table-cell">{{user.role}}</div>
+
+                    <div class="content-table-cell" id="buttons">
+                        <button onclick="handleAction('{{ user.username }}', 'activate')">Activate</button>
+                        <button onclick="handleAction('{{ user.username }}', 'delete')">Delete</button>
+                        <button onclick="handleAction('{{ user.username }}', 'mav')">Mark as Viewed</button>
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="tab-content" id="view">
+            <h2>Mark as View List :</h2>
+            <div class="print-export-buttons" style="float: right;">
+                <button onclick="printTab('sponsor')"><span class="material-symbols-outlined">
+                    print
+                    </span>Print</button>
+                <button onclick="exportToCSV('sponsor')"><span class="material-symbols-outlined">
+                    csv
+                    </span>Export as CSV</button>
+            </div>
+            <div class="content-table">
+                <div class="content-table-header">
+                    <div class="content-table-cell">Profile</div>
+                    <div class="content-table-cell">Username</div>
+                    <div class="content-table-cell">Category</div>
+                    <div class="content-table-cell">Industry</div>
+                    <div class="content-table-cell">Email</div>
+                    <div class="content-table-cell">Role</div>
+                    <div class="content-table-cell">Actions</div>
+                </div>
+                {% for user in user %}
+                {% if user.admin_data == 'View' %}
+                <div class="content-table-row">
+                    <div class="content-table-cell">
+                        {% if user.profile_picture %}
+                        <img src="{{ url_for('uploaded_file', filename=user.profile_picture.replace('upload\\', '')) }}" alt="Profile Picture">
+                        {% else %}
+                        <img src="{{url_for('static', filename='default.jpg')}}" alt="">
+                        {% endif %}
+                    </div>
+                    <div class="content-table-cell">{{ user.username }}</div>
+                    <div class="content-table-cell">{{user.category}}</div>
+                    <div class="content-table-cell">{{user.industry}}</div>
+                    <div class="content-table-cell">{{ user.email_id }}</div>
+                    <div class="content-table-cell">{{user.role}}</div>
+                    <div class="content-table-cell" id="buttons">
+                        <button onclick="handleAction('{{ user.username }}', 'deactivate')">Deactivate</button>
+                        <button onclick="handleAction('{{ user.username }}', 'delete')">Delete</button>
+                        <button onclick="handleAction('{{ user.username }}', 'unview')">Mark as Unviewed</button>
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+
+        <div class="tab-content" id="sponsor">
+            <h2>Sponsors List:</h2>
+            <div class="print-export-buttons" style="float: right;">
+                <button onclick="printTab('sponsor')"><span class="material-symbols-outlined">
+                    print
+                    </span>Print</button>
+                <button onclick="exportToCSV('sponsor')"><span class="material-symbols-outlined">
+                    csv
+                    </span>Export as CSV</button>
+            </div>
+            <div class="content-table">
+                <div class="content-table-header">
+                    <div class="content-table-cell">Profile</div>
+                    <div class="content-table-cell">Username</div>
+                    <div class="content-table-cell">Category</div>
+                    <div class="content-table-cell">Industry</div>
+                    <div class="content-table-cell">Email</div>
+                    <div class="content-table-cell">Actions</div>
+                </div>
+                {% for user in user %}
+                {% if user.role == 'sponsor' and (user.admin_data !='view' and user.admin_data !='deactivate') %}
+                <div class="content-table-row">
+                    <div class="content-table-cell">
+                        {% if user.profile_picture %}
+                        <img src="{{ url_for('uploaded_file', filename=user.profile_picture.replace('upload\\', '')) }}" alt="Profile Picture">
+                        {% else %}
+                        <img src="{{url_for('static', filename='default.jpg')}}" alt="">
+                        {% endif %}
+                    </div>
+                    <div class="content-table-cell">{{ user.username }}</div>
+                    <div class="content-table-cell">{{user.category}}</div>
+                    <div class="content-table-cell">{{user.industry}}</div>
+                    <div class="content-table-cell">{{ user.email_id }}</div>
+                    <div class="content-table-cell" id="buttons">
+                        <button onclick="handleAction('{{ user.username }}', 'deactivate')">Deactivate</button>
+                        <button onclick="handleAction('{{ user.username }}', 'delete')">Delete</button>
+                        <button onclick="handleAction('{{ user.username }}', 'mav')">Mark as Viewed</button>
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="tab-content" id="influencer">
+            <h2>Influencers List:</h2>
+            <div class="print-export-buttons" style="float: right;">
+                <button onclick="printTab('sponsor')"><span class="material-symbols-outlined">
+                    print
+                    </span>Print</button>
+                <button onclick="exportToCSV('sponsor')"><span class="material-symbols-outlined">
+                    csv
+                    </span>Export as CSV</button>
+            </div>
+            <div class="content-table">
+                <div class="content-table-header">
+                    <div class="content-table-cell">Profile</div>
+                    <div class="content-table-cell">Username</div>
+                    <div class="content-table-cell">Industry</div>
+                    <div class="content-table-cell">Email</div>
+                    <div class="content-table-cell">Actions</div>
+                </div>
+                {% for user in user %}
+                {% if user.role == 'influencer' and (user.admin_data !='view' and user.admin_data !='deactivate')  %}
+                <div class="content-table-row">
+                    <div class="content-table-cell">
+                        {% if user.profile_picture %}
+                        <img src="{{ url_for('uploaded_file', filename=user.profile_picture.replace('upload\\', '')) }}" alt="Profile Picture">
+                        {% else %}
+                        <img src="{{url_for('static', filename='default.jpg')}}" alt="">
+                        {% endif %}
+                    </div>
+                    <div class="content-table-cell">{{ user.username }}</div>
+                    <div class="content-table-cell">{{user.industry}}</div>
+                    <div class="content-table-cell">{{ user.email_id }}</div>
+                    <div class="content-table-cell" id="buttons">
+                        <button onclick="handleAction('{{ user.username }}', 'deactivate')">Deactivate</button>
+                        <button onclick="handleAction('{{ user.username }}', 'delete')">Delete</button>
+                        <button onclick="handleAction('{{ user.username }}', 'mav')">Mark as Viewed</button>
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="tab-content" id="campso">
+            <h2>Ongoing or Upcoming Campaigns:</h2>
+            <div class="print-export-buttons" style="float: right;">
+                <button onclick="printTab('sponsor')"><span class="material-symbols-outlined">
+                    print
+                    </span>Print</button>
+                <button onclick="exportToCSV('sponsor')"><span class="material-symbols-outlined">
+                    csv
+                    </span>Export as CSV</button>
+            </div>
+            <div class="content-table">
+                <div class="content-table-header">
+                    <div class="content-table-cell">Profile</div>
+                    <div class="content-table-cell">User ID</div>
+                    <div class="content-table-cell">Title</div>
+                    <div class="content-table-cell">Budget</div>
+                    <div class="content-table-cell">Campaign ID</div>
+                </div>
+                {% for campaign in camp %}
+                {% if campaign.end >= datetime.utcnow().date() %}
+                <div class="content-table-row">
+                    <div class="content-table-cell">
+                        {% if user.profile_picture %}
+                        <img src="{{ url_for('uploaded_file', filename=user.profile_picture.replace('upload\\', '')) }}" alt="Profile Picture">
+                        {% else %}
+                        <p>No profile picture available</p>
+                        {% endif %}
+                    </div>
+                    <div class="content-table-cell">{{ campaign.user_id }}</div>
+                    <div class="content-table-cell">{{ campaign.title }}</div>
+                    <div class="content-table-cell">{{ campaign.budget }}</div>
+                    <div class="content-table-cell">{{ campaign.campaign_id }}</div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="tab-content" id="campse">
+            <h2>Expired Campaigns:</h2>
+            <div class="print-export-buttons" style="float: right;">
+                <button onclick="printTab('sponsor')"><span class="material-symbols-outlined">
+                    print
+                    </span>Print</button>
+                <button onclick="exportToCSV('sponsor')"><span class="material-symbols-outlined">
+                    csv
+                    </span>Export as CSV</button>
+            </div>
+            <div class="content-table">
+                <div class="content-table-header">
+                    <div class="content-table-cell">Profile</div>
+                    <div class="content-table-cell">User ID</div>
+                    <div class="content-table-cell">Title</div>
+                    <div class="content-table-cell">Campaign ID</div>
+                </div>
+                {% for campaign in camp %}
+                {% if campaign.end < datetime.utcnow().date() %}
+                <div class="content-table-row">
+                    <div class="content-table-cell">
+                        {% if user.profile_picture %}
+                        <img src="{{ url_for('uploaded_file', filename=user.profile_picture.replace('upload\\', '')) }}" alt="Profile Picture">
+                        {% else %}
+                        <p>No profile picture available</p>
+                        {% endif %}
+                    </div>
+                    <div class="content-table-cell">{{ campaign.user_id }}</div>
+                    <div class="content-table-cell">{{ campaign.title }}</div>
+                    <div class="content-table-cell">{{ campaign.campaign_id }}</div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="tab-content" id="ads">
+            <h2>Ads Requests:</h2>
+            <div class="print-export-buttons" style="float: right;">
+                <button onclick="printTab('sponsor')"><span class="material-symbols-outlined">
+                    print
+                    </span>Print</button>
+                <button onclick="exportToCSV('sponsor')"><span class="material-symbols-outlined">
+                    csv
+                    </span>Export as CSV</button>
+            </div>
+            <div class="content-table">
+                <div class="content-table-header">
+                    <div class="content-table-cell">Request ID</div>
+                    <div class="content-table-cell">Influencer ID</div>
+                    <div class="content-table-cell">Sponsor ID</div>
+                    <div class="content-table-cell">Status</div>
+                </div>
+                {% for add in ads %}
+                <div class="content-table-row">
+                    <div class="content-table-cell">{{ add.request_id }}</div>
+                    <div class="content-table-cell">{{ add.influencer_id }}</div>
+                    <div class="content-table-cell">{{ add.sponsor_id }}</div>
+                    <div class="content-table-cell">{{ add.status }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="tab-content" id="flagged">
+            <h2>Flagged Users:</h2>
+            <div class="print-export-buttons" style="float: right;">
+                <button onclick="printTab('sponsor')"><span class="material-symbols-outlined">
+                    print
+                    </span>Print</button>
+                <button onclick="exportToCSV('sponsor')"><span class="material-symbols-outlined">
+                    csv
+                    </span>Export as CSV</button>
+            </div>
+            <div class="content-table">
+                <div class="content-table-header">
+                    <div class="content-table-cell">Flag ID</div>
+                    <div class="content-table-cell">Flagged User ID</div>
+                    <div class="content-table-cell">Flagger User ID</div>
+
+                    <div class="content-table-cell">Reason</div>
+                </div>
+                {% for i in flg %}
+                <div class="content-table-row">
+                    <div class="content-table-cell">{{ i.flag_id }}</div>
+                    <div class="content-table-cell">{{ i.flagged_user_id }}</div>
+                    <div class="content-table-cell">{{i.flagger_user_id}}</div>
+
+                    <div class="content-table-cell">{{ i.reason }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+         function printTab(tabId) {
+            var printContent = document.getElementById(tabId).innerHTML;
+            var originalContent = document.body.innerHTML;
+
+            document.body.innerHTML = printContent;
+
+            window.print();
+
+            document.body.innerHTML = originalContent;
+        }
+
+        function exportToCSV(tabId) {
+    var table = document.querySelector(`#${tabId} .content-table`);
+    if (!table) {
+        alert("No table found in this tab.");
+        return;
+    }
+    
+    var rows = table.querySelectorAll('tr');
+    var csvContent = [];
+    
+    rows.forEach(function(row) {
+        var cells = row.querySelectorAll('td, th');
+        var rowContent = [];
+        cells.forEach(function(cell) {
+            rowContent.push('"' + cell.textContent.replace(/"/g, '""') + '"');
+        });
+        csvContent.push(rowContent.join(','));
+    });
+
+    var csvString = csvContent.join('\n');
+    var blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+    var link = document.createElement('a');
+    var url = URL.createObjectURL(blob);
+    
+    link.setAttribute('href', url);
+    link.setAttribute('download', `${tabId}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+        function showTab(tabId) {
+            // Hide all tab contents
+            var contents = document.querySelectorAll('.tab-content');
+            contents.forEach(function (content) {
+                content.classList.remove('active');
+            });
+
+            // Remove active class from all tabs
+            var tabs = document.querySelectorAll('.tab');
+            tabs.forEach(function (tab) {
+                tab.classList.remove('active');
+            });
+
+            // Show the selected tab content
+            document.getElementById(tabId).classList.add('active');
+
+            // Add active class to the selected tab
+            var activeTab = document.querySelector('.tab[onclick="showTab(\'' + tabId + '\')"]');
+            if (activeTab) {
+                activeTab.classList.add('active');
+            }
+        }
+
+        function handleAction(userId, action) {
+            fetch(`/admin/${userId}/${action}`, {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                window.location.reload(); // Reload to reflect changes
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+
+</html>

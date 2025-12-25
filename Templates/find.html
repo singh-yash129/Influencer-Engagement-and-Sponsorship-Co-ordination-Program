@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin's Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='find.css') }}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <style>
+        /* Your existing styles */
+        #friends {
+            margin: 25px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            border: 1px solid grey;
+            border-radius: 25px;
+            background: linear-gradient(to right, rgb(154, 152, 150), rgb(209, 207, 197));
+        }
+        #friends:hover {
+            transform: scale(0.99);
+            background: linear-gradient(to right, rgb(27, 149, 231), rgb(125, 190, 240));
+        }
+        #f1, #f3, #f4 {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            font-size: 25px;
+        }
+   
+        #f4 h5 {
+            font-size: 14px;
+            color: rgb(219, 137, 14);
+        }
+        #f1 img {
+            border: 1px solid;
+            border-radius: 50%;
+        }
+        #f1 img:hover {
+            border: 1px solid greenyellow;
+        }
+        #f2 .material-symbols-outlined {
+            background-color: bisque;
+            padding: 5px;
+            border-radius: 50%;
+            border: 1px solid black;
+        }
+        #f2 .material-symbols-outlined:hover {
+            background-color: #f2f2f2;
+            color: #333;
+            border: 1px solid #ccc;
+        }
+        #f2 {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div id="logo">
+            <img src="{{ url_for('static', filename='logo.jpeg') }}" alt="IEAS Logo">
+        </div>
+      
+        <div id="links">
+            <a href="{{url_for('influencer_dashboard', user_1=current_user.username)}}">Social</a>
+            <a href="{{url_for('profile', user=current_user.username)}}">Profile</a>
+            <a href="{{ url_for('inf_search') }}">Campaigns</a>
+            <a href="{{ url_for('home') }}">Stats</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </div>
+    <div id="block">
+        <span class="material-symbols-outlined" onclick="window.history.back()" style="cursor: pointer;">
+            arrow_back_ios
+        </span>
+        <h3 style="text-align: center;">Influencer and Sponsor Search Section :</h3>
+
+        <div id="bar">
+            <div class="search">
+                <span class="material-symbols-outlined">search</span>
+                <input type="search" id="search-input" placeholder="Search .." onkeyup="performSearch()">
+            </div>
+
+            <div id="filter">
+                <button id="filter-button" onclick="toggleFilterOptions()">Filter <span class="material-symbols-outlined">filter_alt</span></button>
+                <div id="filter-options" style="display: none;">
+                    <label><input type="checkbox" name="filter" value="influencer" onchange="performSearch()"> Influencer</label>
+                    <label><input type="checkbox" name="filter" value="sponsor" onchange="performSearch()"> Sponsor</label>
+                </div>
+            </div>
+            <div id="sort">
+                <button id="sort-button" onclick="toggleSortOptions()">Sort <span class="material-symbols-outlined">sort</span></button>
+                <div id="sort-options" style="display: none;">
+                    <button data-sort="asc" onclick="sortByName('asc')">Sort by Name <span class="material-symbols-outlined">sort_by_alpha</span> (Asc)</button>
+                    <button data-sort="desc" onclick="sortByName('desc')">Sort by Name <span class="material-symbols-outlined">sort_by_alpha</span> (Desc)</button>
+                </div>
+            </div>
+        </div>
+        <div id="search-results"></div>
+    </div>
+    <script>
+        const currentUser = "{{ current_user.username }}"; // Replace with the actual logged-in user username
+
+        function toggleFilterOptions() {
+            const filterOptions = document.getElementById('filter-options');
+            const sortOptions = document.getElementById('sort-options');
+            filterOptions.style.display = filterOptions.style.display === 'none' ? 'block' : 'none';
+            sortOptions.style.display = 'none';
+        }
+
+        function toggleSortOptions() {
+            const sortOptions = document.getElementById('sort-options');
+            const filterOptions = document.getElementById('filter-options');
+            sortOptions.style.display = sortOptions.style.display === 'none' ? 'block' : 'none';
+            filterOptions.style.display = 'none';
+        }
+
+        function performSearch() {
+            const query = document.getElementById('search-input').value;
+            const filterOptions = document.querySelectorAll('#filter-options input[name="filter"]:checked');
+            const sortOption = document.querySelector('#sort-options button.active');
+
+            const filters = Array.from(filterOptions).map(option => option.value);
+            const sort = sortOption ? sortOption.getAttribute('data-sort') : 'asc';
+
+            if (query.length > 2) {
+                fetch(`/search?query=${encodeURIComponent(query)}&filters=${encodeURIComponent(JSON.stringify(filters))}&sort=${sort}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const resultsDiv = document.getElementById('search-results');
+                        resultsDiv.innerHTML = '';
+                        data.forEach(user => {
+                            const userUrl = `{{ url_for('view_person', users='') }}${user.username}`;
+                            resultsDiv.innerHTML += `
+                                <div id="friends" >
+                                    <div id="f1" onclick="window.location.href='${userUrl}'">
+                                        <img src="${user.profile_image}" alt="" width="50px" height="50px">
+                                        <h4>${user.username}</h4>
+                                    </div>    
+                                        <div id="f3">
+                                            <div id="f4">
+                                            
+                                                <h4>${user.first_name} ${user.last_name}</h4>
+                                                <h5>Role :${user.role}</h5>
+                                                <h5>Industry :${user.industry}</h5>
+
+                                            </div>
+                                        </div>
+                                    
+                                    <div id="f2">
+                                        <span class="material-symbols-outlined" onclick="sendFriendRequest('${user.username}')">person_add</span>
+                                        <span class="material-symbols-outlined" onclick="followUser('${user.username}')">rss_feed</span>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                    });
+            }
+        }
+
+        function sortByName(order) {
+            document.querySelectorAll('#sort-options button').forEach(button => {
+                button.classList.remove('active');
+            });
+            const sortButton = document.querySelector(`#sort-options button[data-sort='${order}']`);
+            sortButton.classList.add('active');
+
+            // Trigger search with updated sorting
+            performSearch();
+        }
+
+        document.addEventListener('click', function(event) {
+            const filterOptions = document.getElementById('filter-options');
+            const sortOptions = document.getElementById('sort-options');
+            const filterButton = document.getElementById('filter-button');
+            const sortButton = document.getElementById('sort-button');
+
+            if (!filterOptions.contains(event.target) && !filterButton.contains(event.target)) {
+                filterOptions.style.display = 'none';
+            }
+
+            if (!sortOptions.contains(event.target) && !sortButton.contains(event.target)) {
+                sortOptions.style.display = 'none';
+            }
+        });
+
+        function sendFriendRequest(receiver_id) {
+            fetch('/send_friend_request', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ sender_id: currentUser, receiver_id })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+            });
+        }
+
+        function followUser(follower_user_id) {
+            fetch('/follow_user', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ user_id: currentUser, follower_user_id })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+            });
+        }
+    </script>
+</body>
+</html>

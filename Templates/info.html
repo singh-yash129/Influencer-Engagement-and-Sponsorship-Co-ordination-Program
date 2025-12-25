@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/Static/info.css">
+</head>
+<body>
+    <div class="header">
+        <div id="logo">
+            <img src="{{url_for('static',filename='logo.jpeg')}}" alt="IEAS Logo">
+        </div>
+        <h2>Admin's Dashboard</h2>
+        <div id="links">
+            <a href="{{ url_for('Info') }}">Info</a>
+            <a href="{{ url_for('privacy') }}">Find</a>
+            <a href="{{ url_for('about') }}">Stats</a>
+            <a href="{{ url_for('help') }}">Logout</a>
+        </div>
+    </div>
+    <div class="box">
+        <div id="stoms">
+            <h1>Welcome Admin !!</h1>
+            <h2>Explore Your Data with us....</h2>
+        </div>
+        <div id="ongoing">
+            <h2>Ongoing campaigns :</h2>
+            <hr>
+            <div id="bar">
+                Campingn 01 | Progress 10 %
+                <input type="range" name="" id="">
+                <div id="buttons">
+                    <button>View</button>
+                </div>
+            </div>
+        </div>
+        <div id="ongoing">
+            <h2>Flagged Users/Campaigns :</h2>
+            <hr>
+            <div id="bar">
+                Campingn 01 | Company 01
+                <input type="range" name="" id="">
+                <div id="buttons">
+                    <button>View</button>
+                    <button>Remove</button>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    
+    
+</body>
+</html>

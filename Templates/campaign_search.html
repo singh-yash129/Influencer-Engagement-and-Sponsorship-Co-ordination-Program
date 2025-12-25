@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campaign Search</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link rel="stylesheet" href="{{url_for('static',filename='find.css')}}">
+    <style>
+        #results {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 30px;
+        }
+
+        .campaign-box {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .campaign-box img {
+            width: 100%;
+            height: 150px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .campaign-box h4 {
+            margin: 15px 0 10px;
+            font-size: 18px;
+        }
+
+        .campaign-box p {
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .campaign-box button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .campaign-box button .material-symbols-outlined {
+            margin-right: 5px;
+        }
+
+        .campaign-box button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div id="logo">
+            <img src="{{ url_for('static', filename='logo.jpeg') }}" alt="IEAS Logo">
+        </div>
+        <div id="links">
+            <a href="{{url_for('influencer_dashboard',user_1=current_user.username)}}">Social</a>
+            <a href="{{url_for('profile',user=current_user.username)}}">Profile</a>
+            <a href="{{ url_for('find') }}">Find</a>
+            <a href="{{ url_for('home') }}">Stats</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </div>
+    <div id="block">
+        <span class="material-symbols-outlined" onclick="window.history.back()" style="cursor: pointer;">
+            arrow_back_ios
+        </span>
+        <h3 style="text-align: center;">Campaign Search Section :</h3>
+
+        <div id="bar">
+            <div class="search">
+                <span class="material-symbols-outlined">search</span>
+                <input type="search" id="searchInput" placeholder="Search Campaigns" onkeyup="searchCampaigns()">
+            </div>
+            <div id="filter">
+                <button id="filter-button" onclick="toggleFilterOptions()">Filter <span class="material-symbols-outlined">filter_alt</span></button>
+                <div id="filter-options" style="display:none;">
+                    <label><input type="checkbox" value="Technology" onchange="searchCampaigns()"> Technology</label>
+                    <label><input type="checkbox" value="Fashion" onchange="searchCampaigns()"> Fashion</label>
+                    <label><input type="checkbox" value="Food" onchange="searchCampaigns()"> Food</label>
+                </div>
+            </div>
+            <div id="sort">
+                <button id="sort-button" onclick="toggleSortOptions()">Sort <span class="material-symbols-outlined">sort</span></button>
+                <div id="sort-options" style="display:none;">
+                    <button onclick="sortBy('start_asc')" data-sort="start_asc">Start Date <span class="material-symbols-outlined">arrow_upward</span></button>
+                    <button onclick="sortBy('start_desc')" data-sort="start_desc">Start Date <span class="material-symbols-outlined">arrow_downward</span></button>
+                    <button onclick="sortBy('budget_asc')" data-sort="budget_asc">Budget <span class="material-symbols-outlined">arrow_upward</span></button>
+                    <button onclick="sortBy('budget_desc')" data-sort="budget_desc">Budget <span class="material-symbols-outlined">arrow_downward</span></button>
+                </div>
+                
+            </div>
+        </div>
+
+        <div id="results"></div>
+    </div>
+
+    <script>
+        function toggleFilterOptions() {
+            var filterOptions = document.getElementById('filter-options');
+            filterOptions.style.display = filterOptions.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function toggleSortOptions() {
+            var sortOptions = document.getElementById('sort-options');
+            sortOptions.style.display = sortOptions.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function searchCampaigns() {
+            const searchTerm = document.getElementById('searchInput').value;
+            const filters = Array.from(document.querySelectorAll('#filter-options input:checked')).map(el => el.value);
+            const sortOrder = document.querySelector('#sort-options button.active')?.getAttribute('data-sort') || '';
+
+            const params = new URLSearchParams({ search: searchTerm, niche: filters.join(','), sort: sortOrder });
+
+            fetch('/search_campaigns?' + params.toString())
+    .then(response => response.json())
+    .then(campaigns => {
+        const resultsDiv = document.getElementById('results');
+        resultsDiv.innerHTML = campaigns.map(campaign => {
+            const userUrl = `{{ url_for('camp_view', campaign_id='') }}${campaign.campaign_id}`;
+            return `
+                <div class="campaign-box">
+                    <img src="/uploads/${campaign.image}" alt="Campaign Image" onclick="window.location.href='${userUrl}'">
+                    <h4>${campaign.title}</h4>
+                    <p>Budget: $${campaign.budget}</p>
+                    <button onclick="sendRequest('${campaign.campaign_id}')">
+                        <span class="material-symbols-outlined">send</span>Request
+                    </button>
+                </div>
+            `;
+        }).join('');
+    });
+        }
+
+        function sortBy(order) {
+            document.querySelectorAll('#sort-options button').forEach(button => {
+                button.classList.remove('active');
+            });
+            const sortButton = document.querySelector(`#sort-options button[data-sort='${order}']`);
+    sortButton.classList.add('active');
+
+    // Set the data-sort attribute correctly
+    sortButton.setAttribute('data-sort', order);
+
+    // Trigger search with updated sorting
+    searchCampaigns();
+        }
+
+        function sendRequest(campaignId) {
+            fetch('/send_request_inf', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                   
+                },
+                body: new URLSearchParams({ campaign_id: campaignId })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                })
+                .catch(error => {
+                    alert('Error sending request: ' + error.message);
+                });
+        }
+    </script>
+</body>
+
+</html>

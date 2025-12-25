@@ -1,0 +1,209 @@
+
+.form-group {
+    margin: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #050505;
+}
+
+.form-group input, 
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #141414;
+    outline: 2px solid #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.buttons button {
+    width: 50%;
+    padding: 10px;
+    border: none;
+    border-radius: 50px;
+    background-color: #0bdfae;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    gap: 1px;
+    transition: background-color 0.3s;
+}
+
+.buttons button:hover {
+    background-color: #0fb5e3;
+}
+
+.form-group {
+    flex: 1;
+}
+
+.main {
+    margin: 20px;
+  
+}
+
+.campign {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(to bottom,#11dcf2,#fff);
+    padding: 20px;
+    width:240px;
+    height: 240px;
+    border-radius: 10px;
+    border: black solid 2px;
+    word-wrap: normal;
+    text-align: center;
+}
+
+.campign button {
+    width: 100px;
+    height: 40px;
+    border-radius: 10px;
+    font-weight: bold;
+    background-color: rgb(180, 187, 216);
+    transform: background-color 0.3 ease;
+}
+
+.campign button:hover {
+    background-color: aliceblue;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+    
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    border-radius: 10px;
+    background: linear-gradient(to bottom,rgb(211, 211, 179),#e2c0c0);
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#image-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+#image-preview img {
+    max-width: 100px;
+    max-height: 100px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+.main1 {
+    margin: 20px;
+}
+
+.campign1 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(to bottom,#11dcf2,#fff);
+    padding: 20px;
+    width:240px;
+    height: 240px;
+    border-radius: 10px;
+    border: black solid 2px;
+    word-wrap: normal;
+    text-align: center;
+}
+
+.campign1 button {
+    width: 100px;
+    height: 40px;
+    border-radius: 10px;
+    font-weight: bold;
+    background-color: rgb(180, 187, 216);
+    transform: background-color 0.3 ease;
+}
+
+.campign1 button:hover {
+    background-color: aliceblue;
+}
+.public-private-slider-container {
+    margin-top: 0px;
+    
+}
+.public-private-slider {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100px;
+    height: 30px;
+    background-color: #ddd;
+    border-radius: 15px;
+    cursor: pointer;
+    position: relative;
+}
+.public-private-slider-label {
+    flex: 1;
+    text-align: center;
+    line-height: 30px;
+    font-size: 12px;
+}
+.public-private-slider-button {
+    width: 50%;
+    height: 100%;
+    background-color: #4CAF50;
+    border-radius: 15px;
+    position: absolute;
+    transition: 0.3s;
+    opacity: 50%;
+    font: bold;
+
+}
+.public-private-slider-button.left {
+    left: 0;
+}
+.public-private-slider-button.right {
+    left: 50%;
+}
+#box{
+    display: flex;
+    flex-wrap: wrap;
+ align-content: center;
+ justify-content: space-evenly;
+  
+    
+
+}
